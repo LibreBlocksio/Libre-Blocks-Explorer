@@ -1,0 +1,22 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_354)">
+<mask id="mask0_1_354" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="5" y="5" width="10" height="10">
+<path d="M10 15C12.7614 15 15 12.7614 15 10C15 7.23858 12.7614 5 10 5C7.23858 5 5 7.23858 5 10C5 12.7614 7.23858 15 10 15Z" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0_1_354)">
+<path d="M19.8995 10.8536L10 0.954102L9.29289 1.66121L19.1924 11.5607L19.8995 10.8536Z" fill="currentColor"/>
+<path d="M18.4852 12.2679L8.58569 2.36841L7.87858 3.07551L17.7781 12.975L18.4852 12.2679Z" fill="currentColor"/>
+<path d="M17.0711 13.682L7.17163 3.78247L6.46452 4.48958L16.364 14.3891L17.0711 13.682Z" fill="currentColor"/>
+<path d="M15.6568 15.0963L5.75732 5.19678L5.05021 5.90388L14.9497 15.8034L15.6568 15.0963Z" fill="currentColor"/>
+<path d="M14.2428 16.5103L4.34326 6.61084L3.63615 7.31795L13.5356 17.2174L14.2428 16.5103Z" fill="currentColor"/>
+<path d="M12.8285 17.9246L2.92896 8.02515L2.22185 8.73225L12.1213 18.6317L12.8285 17.9246Z" fill="currentColor"/>
+<path d="M11.4141 19.3389L1.51465 9.43945L0.807544 10.1466L10.707 20.0461L11.4141 19.3389Z" fill="currentColor"/>
+</g>
+<path d="M19.5 0.5H0.5V19.5H19.5V0.5Z" stroke="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_1_354">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>
