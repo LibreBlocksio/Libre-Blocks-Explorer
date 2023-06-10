@@ -3,7 +3,7 @@
 - https://heliopolis.libreblocks.com/exchange-rates.json (PBTC Price, LIBRE Price) - will be updated every 12 hours
 
 ## Getting Started
-First, run the development server:
+First, run the development server if necessary to test. This is not suitable for production:
 
 ```bash
 yarn
@@ -12,3 +12,40 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Running a Production Instance with PM2
+Running a Yarn built version of the Libre Blocks Explorer under PM2 is performant and production ready alternative to using docker.
+
+Please follow the process below:
+
+### Install Node.js
+```$ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - &&sudo apt-get install -y nodejs```
+
+### Install PM2
+```$ sudo npm install pm2 -g```
+
+### Install Yarn
+```$ sudo npm install --global yarn```
+
+### Configure for your environment
+``` 
+$ nano ~/Libre-Blocks-Explorer/.env
+
+NEXT_PUBLIC_HELIOPOLIS_API=https://heliopolis.libreblocks.com
+NEXT_PUBLIC_LIBRE_API=https://lb.libre.org/v2/history
+NEXT_PUBLIC_HYPERION_API=https://hyperion.libre.quantumblok.com/v2
+NEXT_PUBLIC_LIBRE_DASHBOARD_API=https://dashboard-api.libre.org
+NEXT_PUBLIC_BLOCK_API=https://hyperion.libre.blocktimeinc.com/v1
+```
+### Build and Run Libre Blocks Explorer
+```
+$ cd ~/Libre-Blocks-Explorer
+
+$ yarn build
+
+$ pm2 start yarn --name "libreblocks" -- next start
+```
+### PM2 Logs
+```$ pm2 logs```
+
+
