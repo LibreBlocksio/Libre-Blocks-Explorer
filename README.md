@@ -1,4 +1,11 @@
-## Used API's
+![alt text](https://www.libreblocks.io/images/github-readme-cover.png)
+
+# Libre Blockchain Explorer
+
+Explore transactions, blocks, and valuable data for the Libre Blockchain.
+
+
+## Temporary used APIs
 - https://heliopolis.libreblocks.com/tokens.json (name, symbol, supply, marketCap, staked, apy) - will be updated every 12 hours
 - https://heliopolis.libreblocks.com/exchange-rates.json (PBTC Price, LIBRE Price) - will be updated every 12 hours
 
@@ -33,9 +40,9 @@ $ nano ~/Libre-Blocks-Explorer/.env
 
 NEXT_PUBLIC_HELIOPOLIS_API=https://heliopolis.libreblocks.com
 NEXT_PUBLIC_LIBRE_API=https://lb.libre.org/v2/history
-NEXT_PUBLIC_HYPERION_API=https://hyperion.libre.quantumblok.com/v2
+NEXT_PUBLIC_HYPERION_API=https://lb.libre.org/v2
 NEXT_PUBLIC_LIBRE_DASHBOARD_API=https://dashboard-api.libre.org
-NEXT_PUBLIC_BLOCK_API=https://hyperion.libre.blocktimeinc.com/v1
+NEXT_PUBLIC_BLOCK_API=https://lb.libre.org/v1
 ```
 ### Build and Run Libre Blocks Explorer
 ```
@@ -48,4 +55,5 @@ $ pm2 start yarn --name "libreblocks" -- next start
 ### PM2 Logs
 ```$ pm2 logs```
 
-
+## Feedback
+If you have any feedback, please contact us at libreblocks@gmail.com or the telegram https://t.me/libreblocks
