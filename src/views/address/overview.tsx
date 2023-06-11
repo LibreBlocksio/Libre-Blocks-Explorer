@@ -18,7 +18,6 @@ export default function AccountOverview({ tokens }: OverviewProps) {
 
   return (
     <div className='flex-1'>
-      <h4 className='mb-4 text-xl font-semibold text-white'>Wallet Account Overview</h4>
 
       <div className='w-full overflow-x-auto rounded-md border border-shade-800 bg-shade-900'>
         <table className='custom-table'>

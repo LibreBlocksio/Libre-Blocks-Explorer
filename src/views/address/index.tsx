@@ -1,4 +1,5 @@
 import AccountOverview from '@/views/address/overview';
+import AccountProducers from '@/views/address/producers';
 import StakeDetails from '@/views/address/stake-details';
 import Transactions from '@/views/address/transactions';
 
@@ -13,7 +14,7 @@ export default function ViewAddress({ accountData }: ViewProps) {
     {
       name: 'Staked',
       value: accountData.account?.voter_info?.staked,
-   
+      //Some accounts may not have balance or stake data.
     },
   ];
 
@@ -26,8 +27,12 @@ export default function ViewAddress({ accountData }: ViewProps) {
           </span>
         </div>
       </div>
+
       <div className='container'>
-        <div className='my-12 space-y-6 md:flex md:space-y-0 md:space-x-6'>
+        <h4 className='mb-4 mt-5  text-xl font-semibold text-white'>Wallet Account Overview</h4>
+        <AccountProducers accountData={accountData} />
+
+        <div className='my-5 space-y-6 md:flex md:space-x-6 md:space-y-0'>
           <AccountOverview tokens={accountData.tokens} />
           <StakeDetails data={stakeDetailsData} />
         </div>
