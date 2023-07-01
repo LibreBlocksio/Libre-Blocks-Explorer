@@ -59,6 +59,7 @@ export const StyledTablePagination = styled(TablePagination)<{ component?: strin
   ({ theme }) => ({
     color: 'rgb(255, 255, 255)',
     borderBottomWidth: 0,
+    overflow: 'visible',
     '.MuiIconButton-root': {
       '&.Mui-disabled': {
         color: 'rgba(255, 255, 255, .5)',

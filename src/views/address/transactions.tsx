@@ -173,19 +173,35 @@ export default function Transactions({ account }: { account: string }) {
                 </div>
               </S.StyledTableCell>
               <S.StyledTableCell size='medium'>
-                <span className='inline-flex rounded-full bg-shade-800 px-2 py-1 text-[13px] capitalize'>
-                  {row.act.data.quantity}{' '}
+                <span className='inline-flex min-w-max rounded-full bg-shade-800 px-2 py-1 text-[13px] capitalize'>
+                  <span>{row.act.data.quantity} </span>
                   {row.act.data.quantity && row.act.data.quantity.includes('LIBRE') && (
-                    <img src='/images/symbols/LIBRE.svg' alt='LIBRE Icon' className='ml-1 h-5' />
+                    <img
+                      src='/images/symbols/LIBRE.svg'
+                      alt='LIBRE Icon'
+                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
+                    />
                   )}
                   {row.act.data.quantity && row.act.data.quantity.includes('PBTC') && (
-                    <img src='/images/symbols/PBTC.svg' alt='PBTC Icon' className='ml-1 h-5' />
+                    <img
+                      src='/images/symbols/PBTC.svg'
+                      alt='PBTC Icon'
+                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
+                    />
                   )}
                   {row.act.data.quantity && row.act.data.quantity.includes('BTCLIB') && (
-                    <img src='/images/symbols/BTCLIB.svg' alt='BTCLIB Icon' className='ml-1 h-5' />
+                    <img
+                      src='/images/symbols/BTCLIB.svg'
+                      alt='BTCLIB Icon'
+                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
+                    />
                   )}
                   {row.act.data.quantity && row.act.data.quantity.includes('PUSDT') && (
-                    <img src='/images/symbols/PUSDT.svg' alt='PUSDT Icon' className='ml-1 h-5' />
+                    <img
+                      src='/images/symbols/PUSDT.svg'
+                      alt='PUSDT Icon'
+                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
+                    />
                   )}
                 </span>
               </S.StyledTableCell>
@@ -202,10 +218,10 @@ export default function Transactions({ account }: { account: string }) {
           ))}
         </S.StyledTableBody>
       </Table>
-      <div className=' items-center justify-center lg:items-center '>
+      <div className='sticky left-0 min-w-max'>
         <S.StyledTablePagination
           component='div'
-          rowsPerPageOptions={[10, 25, 50]}
+          rowsPerPageOptions={[10, 25, 50, 100]}
           count={-1}
           labelRowsPerPage='Rows:'
           rowsPerPage={rowsPerPage}
