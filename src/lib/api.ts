@@ -2,17 +2,17 @@ import type { QueryKey } from '@tanstack/react-query';
 import axios from 'axios';
 
 export const getCoinInfo = async () => {
-  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HELIOPOLIS_API}/tokens.json`);
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_DASHBOARD_API}/tokens`);
   return data;
 };
 
 export const getChainInfo = async () => {
-  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HELIOPOLIS_API}/chain.json`);
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_DASHBOARD_API}/stats/chain`);
   return data;
 };
 
 export const getExchangeRates = async () => {
-  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HELIOPOLIS_API}/exchange-rates.json`);
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_DASHBOARD_API}/exchange-rates`);
   return data;
 };
 
@@ -71,6 +71,6 @@ export const getProducers = async () => {
 };
 
 export const getTokens = async () => {
-  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HELIOPOLIS_API}/tokens.json`);
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_DASHBOARD_API}/tokens`);
   return data;
 };

@@ -16,7 +16,7 @@ const links = [
   {
     url: 'https://ordinals.libre.org/',
     label: 'Ordinals',
-    badge: 'new',
+    badge: 'coming soon!',
   },
   {
     url: 'https://defi.libre.org/',
@@ -72,7 +72,7 @@ export default function Header() {
                   {item.label}
                   {item.badge && (
                     <span className='relative ml-1 rounded bg-primary px-1 py-1 text-xs text-white'>
-                      New
+                      {item.badge}
                     </span>
                   )}
                 </Link>

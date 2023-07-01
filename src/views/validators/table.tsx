@@ -1,14 +1,21 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Table, TableHead, TableRow } from '@mui/material';
 import * as S from '@/styles/table';
 import { motion } from 'framer-motion';
 import type { ValidatorsTableProps } from './types';
 import { numberFormat } from '@/utils/number';
 import Link from 'next/link';
+import React from 'react';
 const MotionTableRow = motion(TableRow);
 
 export default function ValidatorsTable({ data }: ValidatorsTableProps) {
   const numberFormat = new Intl.NumberFormat('en-US', { style: 'decimal' });
+  const [randomData, setRandomData] = React.useState<ValidatorsTableProps['data']>([]);
+
+  useEffect(() => {
+    const randomizedData = [...data].sort(() => Math.random() - 0.5);
+    setRandomData(randomizedData);
+  }, [data]);
 
   return (
     <div className='w-full overflow-x-auto rounded-md border border-shade-800 bg-shade-900'>
@@ -24,7 +31,7 @@ export default function ValidatorsTable({ data }: ValidatorsTableProps) {
           </S.StyledTableRow>
         </TableHead>
         <S.StyledTableBody>
-          {data.map((row) => (
+          {randomData.map((row) => (
             <MotionTableRow
               key={`${JSON.stringify(row)}`}
               initial={{ height: 0, opacity: 0 }}

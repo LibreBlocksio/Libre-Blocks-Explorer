@@ -30,7 +30,22 @@ export default function CoinInfo() {
             <ImageLibre className='h-6.5 w-6.5 object-contain' />
           </div>
           <div>
-            <div className='text-2xl font-semibold'>LIBRE</div>
+            <div className='flex items-center'>
+              <div className='mr-2 text-2xl font-semibold'>LIBRE</div>
+              <a href='https://www.coingecko.com/en/coins/libre' target='_blank'>
+                <img
+                  className='mr-2 h-7 transition-transform duration-300 hover:scale-110'
+                  src='\icons\coingecko.svg'
+                />
+              </a>
+              <a href='https://coinmarketcap.com/currencies/libre/' target='_blank'>
+                <img
+                  className='h-7 transition-transform duration-300 hover:scale-110'
+                  src='\icons\coinmarketcap.svg'
+                />
+              </a>
+            </div>
+
             <div className='font-semibold'>{currencyFormat(exchangeRatesQuery.data.LIBRE, 6)}</div>
           </div>
         </div>
@@ -60,7 +75,7 @@ export default function CoinInfo() {
             <IconTotalSupply className='h-5 w-5 shrink-0 text-shade-400' />
             <span>Total Supply</span>
           </div>
-          <span>{numberFormat(1000000000)}</span>
+          <span>{numberFormat(10000000000)}</span>
         </div>
       </div>
     </div>

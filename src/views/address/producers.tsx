@@ -1,6 +1,3 @@
-import { useExchangeRates } from '@/hooks/api';
-import { currencyFormat } from '@/utils/number';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import type { ViewProps } from './types';
 

@@ -17,7 +17,7 @@ export const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   color: 'rgb(255, 255, 255)',
   fontFamily: 'inherit',
-  padding: '12px 20px 12px 0px',
+  padding: '12px 10px 10px 0px',
   borderTopColor: 'rgb(49, 48, 48)',
   borderRightColor: 'rgb(49, 48, 48)',
   borderLeftColor: 'rgb(49, 48, 48)',
@@ -33,7 +33,7 @@ export const StyledTableBody = styled(TableBody)(({ theme }) => ({
 }));
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: '400',
+  fontWeight: '350',
   fontSize: '0.875rem',
   letterSpacing: '0.01071em',
   display: 'table-cell',
@@ -46,7 +46,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderTopColor: 'rgb(49, 48, 48)',
   borderRightColor: 'rgb(49, 48, 48)',
   borderLeftColor: 'rgb(49, 48, 48)',
-  lineHeight: '24px',
+  lineHeight: '22px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',

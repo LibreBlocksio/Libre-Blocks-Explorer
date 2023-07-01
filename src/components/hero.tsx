@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Link from 'next/link';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { Search } from '@mui/icons-material';
@@ -36,7 +35,6 @@ const SearchBar = React.forwardRef<HTMLInputElement, React.ComponentPropsWithRef
   }
 );
 
-
 const isBlock = (v: string): boolean => /^\d+$/.test(v);
 
 const isTx = (v: string): boolean => v.length > 12 && !/^\d+$/.test(v);
@@ -69,86 +67,94 @@ export default function Hero() {
       pathname: `/${_searchBy}/[searchTerm]`,
       query: { searchTerm: _searchTerm },
     });
-    setSearchTerm(() => ''); 
+    setSearchTerm(() => '');
   };
 
   useHotkeys('enter', () => handleSearch(searchTerm), [searchTerm], {
-    enableOnFormTags: true, 
+    enableOnFormTags: true,
   });
 
+  const isGeneratePage = router.pathname.includes('generate');
+
   return (
-    <div
-      className='border-b border-shade-800 pt-12 pb-12 md:pb-18'
-      
-      /*  style={{
+    <div className='container'>
+      {!isGeneratePage && (
+        <>
+          <div
+            className='border-b border-shade-800 pb-12 pt-12 md:pb-18'
+
+            /*  style={{
         backgroundImage:
           'linear-gradient(180deg, rgba(255, 98, 0, 0.14) 0%, rgba(13, 13, 13, 0) 100%)',
       }} */
-    >
-      <div className='container'>
-        <div className='text-center'>
-          <h1 className='text-3xl font-semibold text-white sm:text-4.5xl'>
-            Libre Blockchain Explorer
-          </h1>
-          <p className='mt-2 text-sm text-shade-400 sm:text-base'>
-            Explore transactions, blocks, and valuable data for the Libre Blockchain.
-          </p>
-        </div>
-        <div className='mt-4 flex justify-center'>
-          <div className='w-full max-w-lg'>
-            <SearchBar
-              value={searchTerm}
-              onInput={(e: React.FormEvent<HTMLInputElement>) =>
-                setSearchTerm(e.currentTarget.value.toLocaleLowerCase().trim())
-              }
-            />
-            <div className='mt-2 flex items-center space-x-4 text-shade-500'>
-              <div className='flex items-center space-x-1.5'>
-                <Wallet
-                  className={clsx('h-5 w-5', {
-                    'text-primary': searchBy === SEARCH_BY_ENUMS.ADDRESS,
-                  })}
-                />
-                <p
-                  className={clsx('text-sm font-semibold', {
-                    'text-white': searchBy === SEARCH_BY_ENUMS.ADDRESS,
-                  })}
-                >
-                  Account
+          >
+            <div className='container'>
+              <div className='text-center'>
+                <h1 className='text-3xl font-semibold text-white sm:text-4.5xl'>
+                  Libre Blockchain Explorer
+                </h1>
+                <p className='mt-2 text-sm text-shade-400 sm:text-base'>
+                  Explore transactions, blocks, and valuable data for the Libre Blockchain.
                 </p>
               </div>
-              <div className='flex items-center space-x-1.5'>
-                <Currency
-                  className={clsx('h-5 w-5', {
-                    'text-primary': searchBy === SEARCH_BY_ENUMS.TX,
-                  })}
-                />
-                <p
-                  className={clsx('text-sm font-semibold', {
-                    'text-white': searchBy === SEARCH_BY_ENUMS.TX,
-                  })}
-                >
-                  Transactions
-                </p>
-              </div>
-              <div className='flex items-center space-x-1.5'>
-                <Copy
-                  className={clsx('h-5 w-5', {
-                    'text-primary': searchBy === SEARCH_BY_ENUMS.BLOCK,
-                  })}
-                />
-                <p
-                  className={clsx('text-sm font-semibold', {
-                    'text-white': searchBy === SEARCH_BY_ENUMS.BLOCK,
-                  })}
-                >
-                  Blocks
-                </p>
-              </div>
+              <div className='mt-4 flex justify-center'>
+                <div className='w-full max-w-lg'>
+                  <SearchBar
+                    value={searchTerm}
+                    onInput={(e: React.FormEvent<HTMLInputElement>) =>
+                      setSearchTerm(e.currentTarget.value.toLocaleLowerCase().trim())
+                    }
+                  />
+                  <div className='mt-2 flex items-center space-x-4 text-shade-500'>
+                    <div className='flex items-center space-x-1.5'>
+                      <Wallet
+                        className={clsx('h-5 w-5', {
+                          'text-primary': searchBy === SEARCH_BY_ENUMS.ADDRESS,
+                        })}
+                      />
+                      <p
+                        className={clsx('text-sm font-semibold', {
+                          'text-white': searchBy === SEARCH_BY_ENUMS.ADDRESS,
+                        })}
+                      >
+                        Account
+                      </p>
+                    </div>
+                    <div className='flex items-center space-x-1.5'>
+                      <Currency
+                        className={clsx('h-5 w-5', {
+                          'text-primary': searchBy === SEARCH_BY_ENUMS.TX,
+                        })}
+                      />
+                      <p
+                        className={clsx('text-sm font-semibold', {
+                          'text-white': searchBy === SEARCH_BY_ENUMS.TX,
+                        })}
+                      >
+                        Transactions
+                      </p>
+                    </div>
+                    <div className='flex items-center space-x-1.5'>
+                      <Copy
+                        className={clsx('h-5 w-5', {
+                          'text-primary': searchBy === SEARCH_BY_ENUMS.BLOCK,
+                        })}
+                      />
+                      <p
+                        className={clsx('text-sm font-semibold', {
+                          'text-white': searchBy === SEARCH_BY_ENUMS.BLOCK,
+                        })}
+                      >
+                        Blocks
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>{' '}
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

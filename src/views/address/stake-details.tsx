@@ -35,7 +35,7 @@ export default function StakeDetails({ data }: StakeDetailsProps) {
 */
   return (
     <div className='w-80'>
-      <h4 className='mb-4 text-xl font-semibold text-white'>Stake Details Graph / Table</h4>
+      <h4 className='mb-4 text-xl font-semibold text-white'>Stake Details Graph</h4>
       <div className='rounded-md border border-shade-800 p-6'>
         <ResponsiveContainer width='100%' height={160}>
           <PieChart>

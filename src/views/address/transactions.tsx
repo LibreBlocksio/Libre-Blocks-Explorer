@@ -7,15 +7,49 @@ import Link from 'next/link';
 import { useActions } from '@/hooks/api';
 import Loading from '@/components/loading';
 import * as React from 'react';
+import { getTransaction } from '@/lib/api';
+import type { ResponseGetTransaction } from '@/types';
+import { useRouter } from 'next/router';
 
 const MotionTableRow = motion(TableRow);
 
 export default function Transactions({ account }: { account: string }) {
+  const router = useRouter();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const getActionsQuery = useActions({ limit: rowsPerPage, skip: rowsPerPage * page, account });
+  const [resolvedMappedCurrentPageData, setResolvedMappedCurrentPageData] = React.useState<
+    ResponseGetTransaction['actions']
+  >([]);
 
-  if (getActionsQuery.isLoading) {
+  React.useEffect(() => {
+    //console.log('getActionsQuery: ', getActionsQuery);
+    if (getActionsQuery.isLoading || getActionsQuery.isError) return;
+    const { data } = getActionsQuery;
+    const currentPageData = data.actions;
+
+    const fetchData = async () => {
+      const resolvedData = await Promise.all(
+        currentPageData.map(async (row) => {
+          const action = row.act.name;
+          if (action.toLowerCase() === 'claim') {
+            const claimData = await getTransaction({ queryKey: [, { id: row.trx_id }] });
+            const data = claimData.actions[Math.min(claimData.actions.length - 1, 2)].act.data;
+            row.act.data = data;
+          }
+          return row;
+        })
+      );
+
+      setResolvedMappedCurrentPageData(
+        resolvedData as unknown as ResponseGetTransaction['actions']
+      );
+    };
+
+    fetchData();
+  }, [getActionsQuery.isLoading, getActionsQuery.isError, getActionsQuery.dataUpdatedAt]);
+
+  if (getActionsQuery.isLoading || resolvedMappedCurrentPageData.length === 0) {
     return <Loading />;
   }
 
@@ -28,8 +62,10 @@ export default function Transactions({ account }: { account: string }) {
     );
   }
 
-  const { data } = getActionsQuery;
-  const currentPageData = data.actions;
+  const handleRowClick = (row: any) => {
+    const url = `/tx/${row.trx_id}`;
+    router.push(url);
+  };
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -56,8 +92,9 @@ export default function Transactions({ account }: { account: string }) {
           </S.StyledTableRow>
         </TableHead>
         <S.StyledTableBody>
-          {currentPageData.map((row) => (
+          {resolvedMappedCurrentPageData.map((row) => (
             <MotionTableRow
+              className='cursor-pointer hover:bg-[#191919]'
               key={`${JSON.stringify(row)}`}
               initial={{ height: 0, opacity: 0 }}
               animate={{
@@ -76,6 +113,7 @@ export default function Transactions({ account }: { account: string }) {
                   duration: 0.2,
                 },
               }}
+              onClick={() => handleRowClick(row)}
             >
               <S.StyledTableCell size='medium'>
                 <div className='max-w-[220px]'>
@@ -84,7 +122,7 @@ export default function Transactions({ account }: { account: string }) {
                       href={`/tx/${row.trx_id}`}
                       className='inline-block max-w-full truncate align-middle text-primary hover:underline'
                     >
-                      {row.trx_id}
+                      {row.trx_id.slice(0, 6) + '....' + row.trx_id.slice(-6)}
                     </Link>
                   </Tooltip>
                 </div>
@@ -102,7 +140,11 @@ export default function Transactions({ account }: { account: string }) {
                 </Tooltip>
               </S.StyledTableCell>
               <S.StyledTableCell size='medium'>
-                <span className='inline-flex rounded-full bg-shade-800 px-3 py-1 capitalize'>
+                <span
+                  className={`inline-flex rounded-full px-3 py-1 text-[13px] capitalize ${
+                    row.act.name === 'claim' ? 'bg-orange-700' : 'bg-shade-800'
+                  }`}
+                >
                   {row.act.name}
                 </span>
               </S.StyledTableCell>
@@ -130,7 +172,23 @@ export default function Transactions({ account }: { account: string }) {
                   </Tooltip>
                 </div>
               </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>{row.act.data.quantity}</S.StyledTableCell>
+              <S.StyledTableCell size='medium'>
+                <span className='inline-flex rounded-full bg-shade-800 px-2 py-1 text-[13px] capitalize'>
+                  {row.act.data.quantity}{' '}
+                  {row.act.data.quantity && row.act.data.quantity.includes('LIBRE') && (
+                    <img src='/images/symbols/LIBRE.svg' alt='LIBRE Icon' className='ml-1 h-5' />
+                  )}
+                  {row.act.data.quantity && row.act.data.quantity.includes('PBTC') && (
+                    <img src='/images/symbols/PBTC.svg' alt='PBTC Icon' className='ml-1 h-5' />
+                  )}
+                  {row.act.data.quantity && row.act.data.quantity.includes('BTCLIB') && (
+                    <img src='/images/symbols/BTCLIB.svg' alt='BTCLIB Icon' className='ml-1 h-5' />
+                  )}
+                  {row.act.data.quantity && row.act.data.quantity.includes('PUSDT') && (
+                    <img src='/images/symbols/PUSDT.svg' alt='PUSDT Icon' className='ml-1 h-5' />
+                  )}
+                </span>
+              </S.StyledTableCell>
               <S.StyledTableCell size='medium'>
                 <div className='max-w-[220px]'>
                   <Tooltip title={row.act.data.memo} placement='bottom'>
@@ -144,12 +202,12 @@ export default function Transactions({ account }: { account: string }) {
           ))}
         </S.StyledTableBody>
       </Table>
-      <div className='flex items-center justify-between pl-6'>
-        <div className='text-sm'>Page: {page + 1}</div>
+      <div className=' items-center justify-center lg:items-center '>
         <S.StyledTablePagination
           component='div'
-          rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+          rowsPerPageOptions={[10, 25, 50]}
           count={-1}
+          labelRowsPerPage='Rows:'
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           page={page}

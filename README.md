@@ -4,11 +4,6 @@
 
 Explore transactions, blocks, and valuable data for the Libre Blockchain.
 
-
-## Temporary used APIs
-- https://heliopolis.libreblocks.com/tokens.json (name, symbol, supply, marketCap, staked, apy) - will be updated every 12 hours
-- https://heliopolis.libreblocks.com/exchange-rates.json (PBTC Price, LIBRE Price) - will be updated every 12 hours
-
 ## Getting Started
 First, run the development server if necessary to test. This is not suitable for production:
 
