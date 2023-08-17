@@ -14,7 +14,7 @@ const MessageRow = ({ property, value }: { property: number | string; value: num
           {value}
         </Link>
       ) : (
-        <div className='text-primary'>{value}</div>
+        <div className='flex-col justify-between break-words  text-primary'>{value}</div>
       )}
     </div>
   );
@@ -23,13 +23,13 @@ const MessageRow = ({ property, value }: { property: number | string; value: num
 export default function BlockMessageCard({ name, data }: MessageCardProps) {
   return (
     <div className='rounded-md border border-shade-800 bg-shade-900'>
-      <div className='border-b border-shade-800 py-2.5 px-5'>
+      <div className='border-b border-shade-800 px-5 py-2.5'>
         <p className='font-semibold uppercase'>{name}</p>
       </div>
       <div className='space-y-3 p-5'>
         {/* 
-        - tx bizim data içinden gelmediği için bu tooltipli versiyon kullanılmadı
-        
+        - TX bizim data içinden gelmediği için bu tooltipli versiyon kullanılmadı 
+        - The version with this tooltip was not used because the TX did not come from our data.
 
         <div>
           <p className='font-semibold'>Delegator Address</p>
