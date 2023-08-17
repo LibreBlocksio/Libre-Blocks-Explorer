@@ -32,7 +32,7 @@ export default function TxOverview({ data }: OverviewProps) {
   return (
     <div className='divide-y divide-shade-800 rounded-xl border border-shade-800 bg-black pb-5 text-white'>
       <div className='p-5'>
-        <div className='align-center inline-block rounded-full bg-primary py-1.5 px-3 text-xs font-medium capitalize'>
+        <div className='align-center inline-block rounded-full bg-primary px-3 py-1.5 text-xs font-medium capitalize'>
           {actionState}
         </div>
         <p className='mt-5 text-sm'>
@@ -41,7 +41,7 @@ export default function TxOverview({ data }: OverviewProps) {
           {dayjs(timestamp).utc(true).format('MMM DD, YYYY h:mm A')} UTC
         </p>
       </div>
-      <div className='flex items-center justify-between py-3 px-5'>
+      <div className='flex items-center justify-between px-5 py-3'>
         <p>Block</p>
         <p className='font-semibold'>
           <Link href={`/block/${firstAction.block_num}`} className='text-primary hover:underline'>
@@ -49,11 +49,11 @@ export default function TxOverview({ data }: OverviewProps) {
           </Link>
         </p>
       </div>
-      <div className='flex items-center justify-between space-x-2 py-3 px-5'>
+      <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>Total Actions</p>
         <p className='text-right font-semibold'>{data.actions.length}</p>
       </div>
-      <div className='flex items-center justify-between space-x-2 py-3 px-5'>
+      <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>Producer</p>
         <Link
           href={`/address/${firstAction.producer}`}
@@ -63,19 +63,19 @@ export default function TxOverview({ data }: OverviewProps) {
         </Link>
       </div>
 
-      <div className='flex items-center justify-between space-x-2 py-3 px-5'>
+      <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>CPU Usage</p>
         <p className='text-right font-semibold'>{firstAction.cpu_usage_us} µs</p>
       </div>
 
-      <div className='flex items-center justify-between space-x-2 py-3 px-5'>
+      <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>NET Usage</p>
         <p className='text-right font-semibold'>{firstAction.net_usage_words}</p>
       </div>
 
-      <div className='flex items-center justify-between space-x-2 py-3 px-5'>
+      <div className=' flex-col items-start justify-between break-words px-5 py-3'>
         <p>Memo</p>
-        <p className='text-right font-semibold'>{firstAction.act.data.memo || '-'}</p>
+        <p className='text-left font-semibold '>{firstAction.act.data.memo || '-'}</p>
       </div>
     </div>
   );
