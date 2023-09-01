@@ -57,11 +57,20 @@ export default function AccountOverview({ tokens }: OverviewProps) {
               <tr key={token.symbol}>
                 <td>
                   <div className='flex items-center space-x-4'>
-                    <img
-                      src={`/images/symbols/${token.symbol.toUpperCase()}.svg`}
-                      alt=''
-                      className='h-9 w-9 shrink-0'
-                    />
+                  <div className="">
+  {['PBTC', 'PUSDT', 'BTCUSD', 'LIBRE', 'BTCLIB'].includes(token.symbol.toUpperCase()) ? (
+    <img
+      src={`/images/symbols/${token.symbol.toUpperCase()}.svg`}
+      alt={token.symbol.toUpperCase()}
+      className="h-8 w-8 shrink-0"
+    />
+  ) : (
+    <div className="w-11 h-11 rounded-full bg-blue-500 flex flex-col justify-center items-center">
+    <a className="uppercase text-xs">{token.symbol.toUpperCase()}</a>
+    </div>
+  )}
+</div>
+
                     <Link
                       href={'../tokens'}
                       className='inline-block max-w-full truncate align-middle  hover:underline'

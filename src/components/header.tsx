@@ -24,8 +24,8 @@ const links = [
     badge: 'new',
   },
   {
-    url: '/blockchain',
-    label: 'Blockchain',
+    url: '/generate',
+    label: 'Generate',
   },
   {
     url: '/validators',
