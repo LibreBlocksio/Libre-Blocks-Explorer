@@ -74,3 +74,8 @@ export const getTokens = async () => {
   const { data } = await axios.get(`${process.env.NEXT_PUBLIC_DASHBOARD_API}/tokens`);
   return data;
 };
+
+export const getOrdinalsMarketcap = async () => {
+  const { data } = await axios.get(`https://ordinals-api.libre.org/marketcap`);
+  return data;
+};

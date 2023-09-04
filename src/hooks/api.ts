@@ -15,6 +15,7 @@ import type {
   ResponseGetProducers,
   ResponseGetTokens,
   ResponseGetBlock,
+  ResponseOrdinalsMarketcap,
 } from '@/types';
 import * as api from '@/lib/api';
 
@@ -98,5 +99,12 @@ export const useTokens = () => {
   return useQuery<ResponseGetTokens, Error>({
     queryKey: ['coinInfo'],
     queryFn: api.getTokens,
+  });
+};
+
+export const useOrdinalsMarketcap = () => {
+  return useQuery<ResponseOrdinalsMarketcap, Error>({
+    queryKey: ['ordinalsMarketcap'],
+    queryFn: api.getOrdinalsMarketcap,
   });
 };

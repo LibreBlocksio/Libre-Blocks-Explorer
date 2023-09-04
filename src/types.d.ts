@@ -376,3 +376,24 @@ export type ResponseGetBlock = {
   block_num: number;
   ref_block_prefix: number;
 };
+
+export type ResponseOrdinalsMarketcap = {
+  stats:  {
+    tradingVolume:    number;
+    libreAccounts:    number;
+    brcTokenCount:    number;
+    inscriptionCount: number;
+    btcAddressCount:  number;
+  };
+  tokens: {
+    name:               string;
+    mappedName:         string;
+    price:              number;
+    volume:             number;
+    change24h:          number | null;
+    libreHolderCount:   number;
+    totalSupply:        number;
+    marketCap:          number;
+    bitcoinHolderCount: number;
+  }[];
+};
