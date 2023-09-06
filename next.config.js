@@ -6,6 +6,23 @@ const nextConfig = {
 
   reactStrictMode: true,
 
+  async headers() {
+    return [
+      {
+        // Add a wide open CORS policy for the home page only.
+        // This allows browser based traffic management to measure performance of the home page.
+        // May need to rework this if other parts of the site need CORS support.
+        source: "/",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST" },
+          { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
+        ]
+      },
+    ]
+  },
+
   async redirects() {
     return [
       {
