@@ -46,8 +46,8 @@ export default function AccountOverview({ tokens }: OverviewProps) {
     if (isNaN(bValue)) return -1;
     return bValue - aValue;
   });
-  console.log(sortedTokens);
 
+  const BTCPrice = exchangeRatesQuery.data?.PBTC;
 
   const ordinalsMarketcap = ordinalsMarketcapQuery.data;
 
@@ -63,72 +63,94 @@ export default function AccountOverview({ tokens }: OverviewProps) {
             </tr>
           </thead>
           <tbody>
-       {sortedTokens
-  .filter((token) => token.contract !== 'ord.libre' && token.amount !== 0)
-  .map((token) => (
-    // ... Rest of your code for rendering each token
+            {sortedTokens
+              .filter(
+                (token) => token.contract !== "ord.libre" && token.amount !== 0
+              )
+              .map((token) => (
+                // ... Rest of your code for rendering each token
 
+                <tr key={token.symbol}>
+                  <td>
+                    <div className="flex items-center space-x-4">
+                      <div className="">
+                        {[
+                          "PBTC",
+                          "PUSDT",
+                          "BTCUSD",
+                          "LIBRE",
+                          "BTCLIB",
+                        ].includes(token.symbol.toUpperCase()) ? (
+                          <img
+                            src={`/images/symbols/${token.symbol.toUpperCase()}.svg`}
+                            alt={token.symbol.toUpperCase()}
+                            className="h-8 w-8 shrink-0"
+                          />
+                        ) : (
+                          <div className="flex h-11 w-11 flex-col items-center justify-center rounded-full bg-blue-500">
+                            <a className="text-xs uppercase">
+                              {token.symbol.toUpperCase()}
+                            </a>
+                          </div>
+                        )}
+                      </div>
 
-
-              <tr key={token.symbol}>
-                <td>
-                  <div className="flex items-center space-x-4">
-                    <div className="">
-                      {["PBTC", "PUSDT", "BTCUSD", "LIBRE", "BTCLIB"].includes(
-                        token.symbol.toUpperCase()
-                      ) ? (
-                        <img
-                          src={`/images/symbols/${token.symbol.toUpperCase()}.svg`}
-                          alt={token.symbol.toUpperCase()}
-                          className="h-8 w-8 shrink-0"
-                        />
-                      ) : (
-                        <div className="flex h-11 w-11 flex-col items-center justify-center rounded-full bg-blue-500">
-                          <a className="text-xs uppercase">
-                            {token.symbol.toUpperCase()}
-                          </a>
-                        </div>
-                      )}
+                      <Link
+                        href={"../tokens"}
+                        className="inline-block max-w-full truncate align-middle  hover:underline"
+                      >
+                        <span>{token.symbol}</span>
+                      </Link>
                     </div>
-
-                    <Link
-                      href={"../tokens"}
-                      className="inline-block max-w-full truncate align-middle  hover:underline"
-                    >
-                      <span>{token.symbol}</span>
-                    </Link>
-                  </div>
-                </td>
-                <td>{token?.amount ?? 0}</td>
-                <td>
-                  {isNaN(token.amount * exchangeRates[token.symbol]) ? (
-                    <span style={{ color: "white" }}>
-                      ${token.amount * (ordinalsMarketcap.tokens.find((t) => t.mappedName === token.symbol)?.price ?? 0)}
-
-                      
-                    </span>
-                  ) : (
-                    <span style={{ color: "white" }}>
-                      $
-                      {(
-                        token.amount * exchangeRates[token.symbol]
-                      ).toLocaleString("en-US", {
-                        maximumFractionDigits: 3,
-                      })}
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td>{token?.amount ?? 0}</td>
+                  <td>
+                    {isNaN(token.amount * exchangeRates[token.symbol]) ? (
+                      <span style={{ color: "white" }}>
+                        $
+                        {(
+                          token.amount *
+                          (ordinalsMarketcap.tokens.find(
+                            (t) => t.mappedName === token.symbol
+                          )?.price ?? 0) *
+                          BTCPrice
+                        ).toLocaleString("en-US", {
+                          maximumFractionDigits: 3,
+                        })}
+                      </span>
+                    ) : (
+                      <span style={{ color: "white" }}>
+                        $
+                        {(
+                          token.amount * exchangeRates[token.symbol]
+                        ).toLocaleString("en-US", {
+                          maximumFractionDigits: 3,
+                        })}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
           <div></div>
 
           <div></div>
         </table>
         <div className=" flex justify-center py-3 text-[15px]">
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             Total: $
             {totalValue.toLocaleString("en-US", { maximumFractionDigits: 3 })}
+            <br />
+            <span style={{ fontSize: "small" }}>
+              {" "}
+              (Calculated excluding BRC Tokens)
+            </span>
           </div>
         </div>
       </div>
