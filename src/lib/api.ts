@@ -1,5 +1,9 @@
 import type { QueryKey } from '@tanstack/react-query';
 import axios from 'axios';
+import API_URLS from '@/api-urls';
+
+const defaultApiUrl = API_URLS.find((k) => k.default)?.url!;
+const apiUrl = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('apiUrl')!) || defaultApiUrl : defaultApiUrl;
 
 export const getCoinInfo = async () => {
   const { data } = await axios.get(
@@ -29,7 +33,7 @@ export const getLastTransactions = async ({
 }) => {
   const [_key, queryParams] = queryKey;
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_HISTORY_API}/v2/history/get_actions`,
+    `${apiUrl}/v2/history/get_actions`,
     {
       params: queryParams,
     }
@@ -41,7 +45,7 @@ export const getLastTransactions = async ({
 export const getAccount = async ({ queryKey }: { queryKey: QueryKey }) => {
   const [_key, queryParams] = queryKey;
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_HISTORY_API}/v2/state/get_account`,
+    `${apiUrl}/v2/state/get_account`,
     {
       params: queryParams,
     }
@@ -52,7 +56,7 @@ export const getAccount = async ({ queryKey }: { queryKey: QueryKey }) => {
 export const getActions = async ({ queryKey }: { queryKey: QueryKey }) => {
   const [_key, queryParams] = queryKey;
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_HISTORY_API}/v2/history/get_actions`,
+    `${apiUrl}/v2/history/get_actions`,
     {
       params: queryParams, //limit=20&skip=5&account=salimcan
     }
@@ -67,7 +71,7 @@ export const getTransaction = async ({ queryKey }: { queryKey: any }) => {
   }
 
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_HISTORY_API}/v2/history/get_transaction`,
+    `${apiUrl}/v2/history/get_transaction`,
     {
       params: queryParams,
     }
@@ -82,7 +86,7 @@ export const getBlock = async ({ queryKey }: { queryKey: any }) => {
   }
 
   const { data } = await axios.post(
-    `${process.env.NEXT_PUBLIC_HISTORY_API}/v1/chain/get_block`,
+    `${apiUrl}/v1/chain/get_block`,
     {
       block_num_or_id: queryParams.block_num_or_id,
     }

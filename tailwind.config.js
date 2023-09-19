@@ -38,6 +38,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require("tailwindcss-animate"),
     function ({ addComponents }) {
       addComponents({
         '.container': {
