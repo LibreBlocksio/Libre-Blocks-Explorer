@@ -1,7 +1,11 @@
 import type { LogCardProps } from './types';
 import Link from 'next/link';
 
-export default function TxLogCard({ receiver, global_sequence, index }: LogCardProps) {
+export default function TxLogCard({
+  receiver,
+  global_sequence,
+  index,
+}: LogCardProps) {
   interface ReceiverLabels {
     'btc.ptokens': string;
     'usdt.ptokens': string;
@@ -27,8 +31,8 @@ export default function TxLogCard({ receiver, global_sequence, index }: LogCardP
   const label = receiverLabels[receiver as keyof ReceiverLabels] || 'Account';
 
   return (
-    <div className='rounded-md border border-shade-800 bg-shade-900'>
-      <div className='border-b border-shade-800 py-2.5 px-5'>
+    <div className='rounded-md border border-shade-200 bg-white'>
+      <div className='border-b border-shade-200 px-5 py-2.5'>
         <p className='font-semibold'>{index}</p>
       </div>
       <div className='space-y-3 p-5'>
@@ -37,7 +41,10 @@ export default function TxLogCard({ receiver, global_sequence, index }: LogCardP
 
           <div className=''>
             {receiver ? (
-              <Link href={`/address/${receiver}`} className='text-primary hover:underline'>
+              <Link
+                href={`/address/${receiver}`}
+                className='text-primary hover:underline'
+              >
                 {receiver}
               </Link>
             ) : (

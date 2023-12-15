@@ -1,26 +1,32 @@
+'use client';
+
 import * as React from 'react';
 import { Table, TableHead, TableRow } from '@mui/material';
 import * as S from '@/styles/table';
 import { motion } from 'framer-motion';
 import type { TokensTableProps } from './types';
-import { numberFormat } from '@/utils/number';
-import Link from 'next/link';
 const MotionTableRow = motion(TableRow);
 
 export default function TokensTable({ data }: TokensTableProps) {
   const numberFormat = new Intl.NumberFormat('en-US', { style: 'decimal' });
 
   return (
-    <div className='w-full overflow-x-auto rounded-md border border-shade-800 bg-shade-900'>
+    <div className='w-full overflow-x-auto rounded-md border border-shade-200 bg-white'>
       <Table aria-label='Tokens Table'>
         <TableHead>
           <S.StyledTableRow>
-            <S.StyledTableHeadCell size='medium'>ICON</S.StyledTableHeadCell>{' '}
+            <S.StyledTableHeadCell size='medium'>ICON</S.StyledTableHeadCell>
             {/* https://cdn.libre.org/icon-btc.svg */}
-            <S.StyledTableHeadCell size='medium'>NAME</S.StyledTableHeadCell> {/* Bitcoin */}
-            <S.StyledTableHeadCell size='medium'>SYMBOL</S.StyledTableHeadCell> {/* pBTC */}
-            <S.StyledTableHeadCell size='medium'>MARKETCAP</S.StyledTableHeadCell> {/* pBTC */}
-            <S.StyledTableHeadCell size='medium'>SUPPLY</S.StyledTableHeadCell> {/* 71.53 */}
+            <S.StyledTableHeadCell size='medium'>NAME</S.StyledTableHeadCell>
+            {/* Bitcoin */}
+            <S.StyledTableHeadCell size='medium'>SYMBOL</S.StyledTableHeadCell>
+            {/* pBTC */}
+            <S.StyledTableHeadCell size='medium'>
+              MARKETCAP
+            </S.StyledTableHeadCell>
+            {/* pBTC */}
+            <S.StyledTableHeadCell size='medium'>SUPPLY</S.StyledTableHeadCell>
+            {/* 71.53 */}
           </S.StyledTableRow>
         </TableHead>
         <S.StyledTableBody>

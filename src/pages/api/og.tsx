@@ -11,7 +11,9 @@ export default function handler(request: NextRequest) {
 
     // ?title=<title>
     const hasTitle = searchParams.has('username');
-    const title = hasTitle ? searchParams.get('username')?.slice(0, 100) : 'My default title';
+    const title = hasTitle
+      ? searchParams.get('username')?.slice(0, 100)
+      : 'My default title';
 
     return new ImageResponse(
       (

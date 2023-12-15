@@ -1,15 +1,75 @@
-import { useExchangeRates, useOrdinalsMarketcap } from "@/hooks/api";
-import { currencyFormat } from "@/utils/number";
-import Link from "next/link";
-import type { OverviewProps } from "./types";
-import { useState, useEffect } from "react";
+'use client';
+
+import { useExchangeRates, useOrdinalsMarketcap } from '@/hooks/api';
+import type { OverviewProps } from './types';
+import * as React from 'react';
+import * as S from '@/styles/table';
+import { Table, TableHead, TableRow } from '@mui/material';
+import { motion } from 'framer-motion';
+import CustomPagination from '@/components/custom-pagination';
+
+const MotionTableRow = motion(TableRow);
 
 export default function AccountOverview({ tokens }: OverviewProps) {
+  const [page, setPage] = React.useState(0);
+  const rowsPerPage = 5;
   const exchangeRatesQuery = useExchangeRates();
   const ordinalsMarketcapQuery = useOrdinalsMarketcap();
-  const [totalValue, setTotalValue] = useState(0);
+  const [totalValue, setTotalValue] = React.useState(0);
 
-  useEffect(() => {
+  const fetchData = () => {
+    if (exchangeRatesQuery.isLoading || ordinalsMarketcapQuery.isLoading) {
+      return { loading: true };
+    }
+
+    if (exchangeRatesQuery.isError || ordinalsMarketcapQuery.isError) {
+      return {
+        error:
+          exchangeRatesQuery.error?.message +
+          ' ' +
+          ordinalsMarketcapQuery.error?.message,
+      };
+    }
+
+    const exchangeRates = exchangeRatesQuery.data;
+    const ordinalsMarketcap = ordinalsMarketcapQuery.data;
+
+    return { exchangeRates, ordinalsMarketcap };
+  };
+
+  const dataResult = fetchData();
+  const { exchangeRates, ordinalsMarketcap } = dataResult;
+
+  const sortedTokens = React.useMemo(() => {
+    if (!exchangeRates) return false;
+
+    const sorted = [...tokens].sort((a, b) => {
+      const aValue = (a.amount || 0) * (exchangeRates[a.symbol] || 0);
+      const bValue = (b.amount || 0) * (exchangeRates[b.symbol] || 0);
+      if (isNaN(aValue)) return 1;
+      if (isNaN(bValue)) return -1;
+      return bValue - aValue;
+    });
+
+    const filtered = sorted.filter(
+      (token) => token.contract !== 'ord.libre' && token.amount !== 0
+    );
+
+    return filtered;
+  }, [exchangeRates, tokens]);
+
+  const visibleRows = React.useMemo(() => {
+    if (!sortedTokens) return [];
+
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    return sortedTokens.slice(startIndex, endIndex);
+  }, [sortedTokens, page, rowsPerPage]);
+
+  const BTCPrice = exchangeRatesQuery.data?.PBTC;
+
+  React.useEffect(() => {
     if (exchangeRatesQuery.isSuccess) {
       const exchangeRates = exchangeRatesQuery.data;
       let total = 0;
@@ -25,134 +85,137 @@ export default function AccountOverview({ tokens }: OverviewProps) {
     }
   }, [exchangeRatesQuery.isSuccess, tokens]);
 
-  if (exchangeRatesQuery.isLoading || ordinalsMarketcapQuery.isLoading) {
+  if (dataResult.loading) {
     return <span>Loading...</span>;
   }
 
-  if (exchangeRatesQuery.isError || ordinalsMarketcapQuery.isError) {
-    return (
-      <span>
-        Error: {exchangeRatesQuery.error?.message}{" "}
-        {ordinalsMarketcapQuery.error?.message}
-      </span>
-    );
+  if (dataResult.error) {
+    return <span>Error: {dataResult.error}</span>;
   }
 
-  const exchangeRates = exchangeRatesQuery.data;
-  const sortedTokens = [...tokens].sort((a, b) => {
-    const aValue = (a.amount || 0) * (exchangeRates[a.symbol] || 0);
-    const bValue = (b.amount || 0) * (exchangeRates[b.symbol] || 0);
-    if (isNaN(aValue)) return 1;
-    if (isNaN(bValue)) return -1;
-    return bValue - aValue;
-  });
-
-  const BTCPrice = exchangeRatesQuery.data?.PBTC;
-
-  const ordinalsMarketcap = ordinalsMarketcapQuery.data;
-
   return (
-    <div className="flex-1">
-      <div className="w-full overflow-x-auto rounded-md border border-shade-800 bg-shade-900">
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>TOKEN</th>
-              <th>BALANCE</th>
-              <th>VALUE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedTokens
-              .filter(
-                (token) => token.contract !== "ord.libre" && token.amount !== 0
-              )
-              .map((token) => (
-                // ... Rest of your code for rendering each token
+    <div className='flex-1'>
+      <div className='mb-3 flex items-end justify-between'>
+        <h4 className='mb-3 text-2xl font-semibold'>Tokens</h4>
+      </div>
+      <div className='bg-whtie w-full overflow-x-auto rounded-xl border border-shade-200 p-2'>
+        <Table aria-label='Last Transactions'>
+          <TableHead>
+            <S.StyledTableRow>
+              <S.StyledTableHeadCell size='medium'>Asset</S.StyledTableHeadCell>
+              <S.StyledTableHeadCell size='medium'>
+                Amount
+              </S.StyledTableHeadCell>
+              <S.StyledTableHeadCell size='medium'>
+                USD Value
+              </S.StyledTableHeadCell>
+            </S.StyledTableRow>
+          </TableHead>
+          <S.StyledTableBody>
+            {visibleRows.map((token) => (
+              <MotionTableRow
+                key={`${JSON.stringify(token)}`}
+                layout
+                initial={{ height: 0, opacity: 0 }}
+                animate={{
+                  height: 'auto',
+                  display: 'table-row',
+                  opacity: 1,
+                  transition: {
+                    duration: 0.6,
+                  },
+                }}
+                exit={{
+                  height: 0,
+                  opacity: 0,
+                  display: 'none',
+                  transition: {
+                    duration: 0.2,
+                  },
+                }}
+              >
+                <S.StyledTableCell size='medium'>
+                  <div className='flex items-center'>
+                    <img
+                      src={`/images/symbols/${token.symbol}.svg`}
+                      alt={token.symbol}
+                      className='block h-15 w-15 shrink-0 object-contain mr-2'
+                      onError={(e) => {
+                        // @ts-ignore
+                        if (e.target instanceof HTMLElement) {
+                          e.target.style.display = 'none'; // SVG görüntüsünü gizle
+                          const container = document.createElement('div');
+                          container.className = 'flex items-center space-x-2 mr-2'; // İçeriği yatay hizalamak için flex kullanın
+                          const textContainer = document.createElement('div');
+                          textContainer.className = 'rounded-full w-8 h-8 bg-[#4F4FDE] flex items-center justify-center ';
+                          textContainer.style.fontSize = '8px'; // Küçük font boyutu ayarlayın
+                          textContainer.style.overflow = 'hidden'; // İçeriği kırp
+                          textContainer.style.color = 'white'; // Metin rengini beyaz yapın
+                          textContainer.innerText = token.symbol; // Token adını içeriğe ekleyin
+                          container.appendChild(textContainer); // Yazıyı içeriğe ekleyin
+                          if (e.target.parentNode) {
+                            e.target.parentNode.insertBefore(container, e.target.nextSibling); // İçeriği ekleyin
+                          }
+                        }
+                      }}
+                    />
 
-                <tr key={token.symbol}>
-                  <td>
-                    <div className="flex items-center space-x-4">
-                      <div className="">
-                        {[
-                          "PBTC",
-                          "PUSDT",
-                          "BTCUSD",
-                          "LIBRE",
-                          "BTCLIB",
-                        ].includes(token.symbol.toUpperCase()) ? (
-                          <img
-                            src={`/images/symbols/${token.symbol.toUpperCase()}.svg`}
-                            alt={token.symbol.toUpperCase()}
-                            className="h-8 w-8 shrink-0"
-                          />
-                        ) : (
-                          <div className="flex h-11 w-11 flex-col items-center justify-center rounded-full bg-blue-500">
-                            <a className="text-xs uppercase">
-                              {token.symbol.toUpperCase()}
-                            </a>
-                          </div>
-                        )}
-                      </div>
 
-                      <Link
-                        href={"../tokens"}
-                        className="inline-block max-w-full truncate align-middle  hover:underline"
-                      >
-                        <span>{token.symbol}</span>
-                      </Link>
-                    </div>
-                  </td>
-                  <td>{token?.amount ?? 0}</td>
-                  <td>
-                    {isNaN(token.amount * exchangeRates[token.symbol]) ? (
-                      <span style={{ color: "white" }}>
-                        $
-                        {(
-                          token.amount *
-                          (ordinalsMarketcap.tokens.find(
-                            (t) => t.mappedName === token.symbol
-                          )?.price ?? 0) *
-                          BTCPrice
-                        ).toLocaleString("en-US", {
-                          maximumFractionDigits: 3,
-                        })}
-                      </span>
-                    ) : (
-                      <span style={{ color: "white" }}>
-                        $
-                        {(
-                          token.amount * exchangeRates[token.symbol]
-                        ).toLocaleString("en-US", {
-                          maximumFractionDigits: 3,
-                        })}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-          <div></div>
 
-          <div></div>
-        </table>
-        <div className=" flex justify-center py-3 text-[15px]">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            Total: $
-            {totalValue.toLocaleString("en-US", { maximumFractionDigits: 3 })}
-            <br />
-            <span style={{ fontSize: "small" }}>
-              {" "}
-              (Calculated excluding BRC Tokens)
-            </span>
-          </div>
-        </div>
+
+
+<div className='flex items-center'>
+  <span className='font-semibold'>{token.symbol}</span>
+  {['PBTC', 'LIBRE', 'PUSDT', 'BTCLIB','BTCUSD'].includes(token.symbol) ? null : (
+    <div className='bg-[#4F4FDE] text-white px-2 py-1 rounded-full text-xs ml-2'>
+      BRC20
+    </div>
+  )}
+</div>
+
+                  </div>
+                </S.StyledTableCell>
+                <S.StyledTableCell size='medium'>
+                  {token?.amount ?? 0}
+                </S.StyledTableCell>
+                <S.StyledTableCell size='medium'>
+                  {exchangeRates && ordinalsMarketcap && BTCPrice && (
+                    <>
+                      {isNaN(token.amount * exchangeRates[token.symbol]) ? (
+                        <span>
+                          $
+                          {(
+                            token.amount *
+                            (ordinalsMarketcap.tokens.find(
+                              (t) => t.mappedName === token.symbol
+                            )?.price ?? 0) *
+                            BTCPrice
+                          ).toLocaleString('en-US', {
+                            maximumFractionDigits: 3,
+                          })}
+                        </span>
+                      ) : (
+                        <span>
+                          $
+                          {(
+                            token.amount * exchangeRates[token.symbol]
+                          ).toLocaleString('en-US', {
+                            maximumFractionDigits: 3,
+                          })}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </S.StyledTableCell>
+              </MotionTableRow>
+            ))}
+          </S.StyledTableBody>
+        </Table>
+        <CustomPagination
+          dataLength={sortedTokens ? sortedTokens?.length || 0 : 0}
+          onPageChange={(value) => setPage(value)}
+          rowsPerPage={rowsPerPage}
+        />
       </div>
     </div>
   );

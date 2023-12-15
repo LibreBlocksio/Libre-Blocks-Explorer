@@ -3,68 +3,11 @@
 @tailwind utilities;
 
 @layer components {
-  .custom-table {
-    @apply w-full;
-
-    th {
-      line-height: 1.5rem;
-      letter-spacing: 0.01071em;
-      display: table-cell;
-      vertical-align: inherit;
-      border-bottom: 1px solid rgb(49, 48, 48);
-      text-align: left;
-      color: rgb(255, 255, 255);
-      font-family: inherit;
-      padding: 12px 20px 12px 0px;
-      border-top-color: rgb(49, 48, 48);
-      border-right-color: rgb(49, 48, 48);
-      border-left-color: rgb(49, 48, 48);
-      font-weight: 600;
-      font-size: 0.75rem;
-    }
-
-    th:first-of-type {
-      padding-left: 20px;
-    }
-
-    tr {
-      @apply bg-black;
-    }
-
-    tr:last-of-type td {
-      @apply border-b-0;
-    }
-
-    td {
-      font-weight: 400;
-      font-size: 0.875rem;
-      letter-spacing: 0.01071em;
-      display: table-cell;
-      vertical-align: inherit;
-      border-bottom: 1px solid rgb(49, 48, 48);
-      text-align: left;
-      color: rgb(255, 255, 255);
-      font-family: inherit;
-      padding: 12px 20px 12px 0px;
-      border-top-color: rgb(49, 48, 48);
-      border-right-color: rgb(49, 48, 48);
-      border-left-color: rgb(49, 48, 48);
-      line-height: 24px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    td:first-of-type {
-      padding-left: 20px;
-    }
-  }
-
   .announcement-bar {
-    background-color: #000;
-    color: #dadada;
+    background-color: #fff;
+    color: #484848;
     font-size: 12px;
-    border-bottom: 0.5px solid #3e3e3e;
+    border-bottom: 0.5px solid #c9c9c9;
     font-weight: normal;
     padding: 8px;
     position: relative;
@@ -78,7 +21,7 @@
   .close-button {
     background-color: transparent;
     border: none;
-    color: #fff;
+
     font-size: 20px;
     height: 20px;
     line-height: 1;
@@ -127,6 +70,7 @@
   from {
     transform: scale(0);
   }
+
   to {
     transform: scale(1);
   }

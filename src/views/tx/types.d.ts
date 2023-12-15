@@ -1,12 +1,9 @@
 import type { ResponseGetTransaction } from '@/types';
 
-export type ViewProps = {
-  data: ResponseGetTransaction;
-};
-
-export type LogCardProps = ResponseGetTransaction['actions'][number]['receipts'][number] & {
-  index: number;
-};
+export type LogCardProps =
+  ResponseGetTransaction['actions'][number]['receipts'][number] & {
+    index: number;
+  };
 
 export type MessageCardProps = {
   name: ResponseGetTransaction['actions'][number]['act']['name'];

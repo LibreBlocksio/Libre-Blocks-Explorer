@@ -2,7 +2,6 @@ import CoinInfo from './coin-info';
 import MiniCards from './mini-cards';
 import PriceChart from './price-chart';
 import LastSwapTransactions from './tables/last-swap-transactions';
-import LastTransactions from './tables/last-transactions';
 
 export default function ViewHome() {
   return (
@@ -12,13 +11,13 @@ export default function ViewHome() {
           <MiniCards />
         </div>
 
-        <div className='mt-12 grid gap-6 md:grid-cols-2'>
-          <CoinInfo />
-          <PriceChart />
-        </div>
-
-        <div className='mt-12'>
-          <LastTransactions />
+        <div className='mt-12 grid gap-6 md:grid-cols-6'>
+          <div className='col-span-6 xl:col-span-2'>
+            <CoinInfo />
+          </div>
+          <div className='col-span-6 xl:col-span-4'>
+            <PriceChart />
+          </div>
         </div>
 
         <div className='mt-12'>

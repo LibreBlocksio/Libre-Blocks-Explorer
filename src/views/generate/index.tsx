@@ -1,15 +1,15 @@
+'use client';
+
 import React, { useState } from 'react';
 import * as bip39 from 'bip39';
 import hdkey from 'hdkey';
 import wif from 'wif';
 import ecc from 'eosjs-ecc';
 import Chip from '@mui/material/Chip';
-import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const PubkeyGenerator: React.FC = () => {
-  const router = useRouter();
   const [mnemonic, setMnemonic] = useState<string>('');
   const [privateExtendedKey, setprivateExtendedKey] = useState<string>('');
   const [publicKey, setPublicKey] = useState<string>('');
@@ -21,7 +21,9 @@ const PubkeyGenerator: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     const { checked } = event.target;
     if (checked) {
       closeModal();
@@ -42,7 +44,10 @@ const PubkeyGenerator: React.FC = () => {
     const masterPrivateKey: Buffer = root.privateKey;
     const child: hdkey = root.derive("m/44'/194'/0'/0/0");
     const privateKey: Buffer = child.privateKey;
-    const publicKey: string = ecc.PrivateKey(child.privateKey).toPublic().toString();
+    const publicKey: string = ecc
+      .PrivateKey(child.privateKey)
+      .toPublic()
+      .toString();
     const privateExtendedKey: string = root.privateExtendedKey;
     setprivateExtendedKey(privateExtendedKey);
     setGenerateClicked(true);
@@ -71,21 +76,30 @@ const PubkeyGenerator: React.FC = () => {
   return (
     <div className='justify-content-center container mt-10 max-w-screen-sm text-center'>
       <div className='text-center'>
-        <h1 className='text-3xl font-semibold text-white sm:text-4.5xl'>
+        <h1 className='text-3xl font-semibold sm:text-4.5xl'>
           Libre Blockchain Seed Phrase and Key Generator
         </h1>
-        <p className='mt-5 text-sm text-shade-200 sm:text-base'>
-          The purpose of this tool is to provide a simple way to generate seed phrases and keypairs
-          to use for creating Libre accounts at{' '}
-          <a href='https://accounts.libre.org/' className='underline hover:text-orange-600'>
+        <p className='mt-5 text-sm text-shade-800 sm:text-base'>
+          The purpose of this tool is to provide a simple way to generate seed
+          phrases and keypairs to use for creating Libre accounts at{' '}
+          <a
+            href='https://accounts.libre.org/'
+            className='underline hover:text-orange-600'
+          >
             accounts.libre.org
           </a>{' '}
           or for use in wallets such as{' '}
-          <a href='https://www.bitcoinlibre.io/' className='underline hover:text-orange-600'>
+          <a
+            href='https://www.bitcoinlibre.io/'
+            className='underline hover:text-orange-600'
+          >
             Bitcoin Libre
           </a>{' '}
           or{' '}
-          <a href='https://www.greymass.com/anchor' className='underline hover:text-orange-600'>
+          <a
+            href='https://www.greymass.com/anchor'
+            className='underline hover:text-orange-600'
+          >
             Anchor
           </a>{' '}
         </p>
@@ -102,14 +116,14 @@ const PubkeyGenerator: React.FC = () => {
       </p>
       <div className='justify-content-center container max-w-screen-sm text-center'>
         <button
-          className='mb-4 mr-2 mt-10 rounded-lg bg-white px-5 py-2 text-black hover:bg-orange-600 hover:text-white'
+          className='mb-4 mr-2 mt-10 rounded-lg bg-orange-600 px-5 py-2 text-white transition hover:bg-orange-500'
           onClick={openModal}
         >
           Generate Key Pair
         </button>
         {generateClicked && ( // Condition "Download Keys"
           <button
-            className='mb-4 mt-10 rounded-lg bg-white px-5 py-2 text-black hover:bg-orange-600 hover:text-white'
+            className='mb-4 mt-10 rounded-lg bg-orange-600 px-5 py-2 text-white transition hover:bg-orange-500'
             onClick={downloadTextFile}
           >
             Download Keys
@@ -117,20 +131,23 @@ const PubkeyGenerator: React.FC = () => {
         )}
 
         {showModal ? (
-          <div className='modal w-full max-w-full'>
-            <div className=' text-center '>
-              <p className='mb-5  text-center'>
-                You will be shown some private data. Make sure no one can see your screen - not even
-                cameras.
-                <p className='mb-5  mt-2 text-center'>
-                  Write down the following data somewhere safe and NEVER give your seed phrase or
-                  private key to anyone ever.
-                </p>
-              </p>
-
-              <label className='ml-l text-center '>Check box if you have read the above</label>
-              <input className='ml-4' type='checkbox' onChange={handleCheckboxChange} />
-            </div>
+          <div className='modal w-full max-w-full text-center text-white'>
+            <p className='mb-5'>
+              You will be shown some private data. Make sure no one can see your
+              screen - not even cameras.
+            </p>
+            <p className='mb-5'>
+              Write down the following data somewhere safe and NEVER give your
+              seed phrase or private key to anyone ever.
+            </p>
+            <label className='ml-l '>
+              Check box if you have read the above
+            </label>
+            <input
+              className='ml-4'
+              type='checkbox'
+              onChange={handleCheckboxChange}
+            />
           </div>
         ) : (
           <>
@@ -139,7 +156,9 @@ const PubkeyGenerator: React.FC = () => {
                 className=' border-5 my-5 cursor-pointer  rounded-lg bg-[#58280a] px-5 py-3'
                 onClick={() => {
                   navigator.clipboard.writeText(mnemonic);
-                  toast.success('Mnemonic Copied to clipboard!', { autoClose: 2000 });
+                  toast.success('Mnemonic Copied to clipboard!', {
+                    autoClose: 2000,
+                  });
                 }}
               >
                 <div className='flex items-center justify-center'>
@@ -178,11 +197,15 @@ const PubkeyGenerator: React.FC = () => {
                 className='border-5 my-5 cursor-pointer rounded-lg bg-green-800 px-5 py-3'
                 onClick={() => {
                   navigator.clipboard.writeText(publicKey);
-                  toast.success('Public Key Copied to clipboard!', { autoClose: 2000 });
+                  toast.success('Public Key Copied to clipboard!', {
+                    autoClose: 2000,
+                  });
                 }}
               >
                 <h3 className='text-[#33c954]'>Public Key</h3>
-                <p className='mb-0 mt-2 break-all rounded-lg px-5 py-2 text-center '>{publicKey}</p>
+                <p className='mb-0 mt-2 break-all rounded-lg px-5 py-2 text-center '>
+                  {publicKey}
+                </p>
               </div>
             )}
 
@@ -191,7 +214,9 @@ const PubkeyGenerator: React.FC = () => {
                 className='border-5 my-5 cursor-pointer rounded-lg bg-[#5d0808] px-5 py-3'
                 onClick={() => {
                   navigator.clipboard.writeText(privateKey);
-                  toast.success('Private Key Copied to clipboard!', { autoClose: 2000 });
+                  toast.success('Private Key Copied to clipboard!', {
+                    autoClose: 2000,
+                  });
                 }}
               >
                 <h3 className='text-[#ef4141]'>Private Key</h3>
@@ -203,7 +228,9 @@ const PubkeyGenerator: React.FC = () => {
                 className='border-5 my-5 cursor-pointer  rounded-lg bg-[#0c3d74] px-5 py-3'
                 onClick={() => {
                   navigator.clipboard.writeText(privateExtendedKey);
-                  toast.success('Private Extended Key Copied to clipboard!', { autoClose: 2000 });
+                  toast.success('Private Extended Key Copied to clipboard!', {
+                    autoClose: 2000,
+                  });
                 }}
               >
                 <h3 className='text-[#435efa]'>Private Extended Key</h3>

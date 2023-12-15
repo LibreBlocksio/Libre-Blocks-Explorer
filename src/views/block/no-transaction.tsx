@@ -10,7 +10,10 @@ export default function NoTransaction({ data }: OverviewProps) {
       </div>
       <div className=''>
         <span className='font-semibold'>Producer:</span>{' '}
-        <Link href={`/address/${data.producer}`} className='text-primary hover:underline'>
+        <Link
+          href={`/address/${data.producer}`}
+          className='text-primary hover:underline'
+        >
           {data.producer}
         </Link>
       </div>

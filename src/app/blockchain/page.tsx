@@ -1,6 +1,4 @@
-import CoinInfo from '../views/home/coin-info';
-import MiniCards from '../views/home/mini-cards';
-import PriceChart from '../views/home/price-chart';
+import MiniCards from '@/views/home/mini-cards';
 
 export default function PageBlockchain() {
   return (

@@ -1,43 +1,54 @@
-import React, { useState } from 'react';
+'use client';
+
+import * as React from 'react';
 import type { ViewProps } from './types';
+import dayjs from 'dayjs';
+import { useExchangeRates } from '@/hooks/api';
 
 export default function AccountOverview({ accountData }: ViewProps) {
-  const [showInfo, setShowInfo] = useState(false);
+  const exchangeRatesQuery = useExchangeRates();
+  const tokens = accountData.tokens;
 
-  const handleMouseEnter = () => {
-    setShowInfo(true);
-  };
+  const totalValue = React.useMemo(() => {
+    if (exchangeRatesQuery.isSuccess) {
+      const exchangeRates = exchangeRatesQuery.data;
+      let total = 0;
 
-  const handleMouseLeave = () => {
-    setShowInfo(false);
-  };
+      tokens.forEach((token) => {
+        const value = token.amount * exchangeRates[token.symbol];
+        if (!isNaN(value)) {
+          total += value;
+        }
+      });
+
+      return `$${total.toLocaleString('en-US', { maximumFractionDigits: 3 })}`;
+    }
+
+    return 'Loading...';
+  }, [exchangeRatesQuery.isSuccess, tokens]);
+
+  const votingPower = Number.parseFloat(
+    accountData.account?.voter_info?.staked
+  ).toLocaleString('en-US', { maximumFractionDigits: 3 });
+  const accountCreated = dayjs(accountData.account.created).fromNow();
+  const votedFor = accountData.account?.voter_info?.producers;
+  const totalActions = accountData.total_actions;
 
   return (
-    <div className='mt-4 flex items-center'>
-      {accountData.account?.voter_info?.producers?.[0] === null ||
-      accountData.account?.voter_info?.producers?.[0] === undefined ? (
-        <a
-          className='relative flex items-center justify-center rounded-full  bg-blue-500 px-3 py-1 text-white'
-          href='https://dashboard.libre.org/validators'
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          Please vote
-        </a>
-      ) : (
-        <>
-          <h4 className='font-md mr-2 text-lg text-white'>Voted Validator:</h4>
-          <span className='relative flex items-center justify-center rounded-full bg-orange-500 px-3 py-1 text-white'>
-            {accountData.account?.voter_info?.producers?.[0]}{' '}
-          </span>
-        </>
-      )}
-
-      {showInfo && (
-        <div className='relative ml-2  rounded-full bg-orange-500 p-0  text-white'>
-          <p className='font-sm ml-2 mr-2 '>+ You must LIBRE Stake </p>
+    <div>
+      <div className='text-3xl font-bold'>Value: {totalValue}</div>
+      <div className='mt-6 grid gap-x-12 gap-y-6 sm:grid-cols-2'>
+        <div className='text-lg font-semibold'>
+          Voting Power: {votingPower ?? '-'}
         </div>
-      )}
+        <div className='text-lg font-semibold'>
+          Account Created: {accountCreated}
+        </div>
+        <div className='text-lg font-semibold'>
+          Voted For: {votedFor ?? '-'}
+        </div>
+        <div className='text-lg font-semibold'>{totalActions} Transactions</div>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import * as S from '@/styles/table';
 import { Table, TableHead, TableRow, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
@@ -9,45 +11,66 @@ import Loading from '@/components/loading';
 import * as React from 'react';
 import { getTransaction } from '@/lib/api';
 import type { ResponseGetTransaction } from '@/types';
-import { useRouter } from 'next/router';
+import TimeAgo from 'react-timeago';
+import CustomPagination from '@/components/custom-pagination';
 
 const MotionTableRow = motion(TableRow);
 
-export default function Transactions({ account }: { account: string }) {
-  const router = useRouter();
+const TransactionsTable = ({ account }: { account: string }) => {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const getActionsQuery = useActions({ limit: rowsPerPage, skip: rowsPerPage * page, account });
-  const [resolvedMappedCurrentPageData, setResolvedMappedCurrentPageData] = React.useState<
-    ResponseGetTransaction['actions']
-  >([]);
+  const [totalPages, setTotalPages] = React.useState(0);
+  const [pageDataLoading, setPageDataLoading] = React.useState(false);
+  const rowsPerPage = 10;
+
+  const getActionsQuery = useActions({
+    limit: 1000,
+    account,
+  });
+
+  const [resolvedMappedCurrentPageData, setResolvedMappedCurrentPageData] =
+    React.useState<ResponseGetTransaction['actions']>([]);
 
   React.useEffect(() => {
-    //console.log('getActionsQuery: ', getActionsQuery);
     if (getActionsQuery.isLoading || getActionsQuery.isError) return;
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
     const { data } = getActionsQuery;
-    const currentPageData = data.actions;
+    setTotalPages(data?.actions.length ?? 0);
+    const currentPageData = data?.actions.slice(startIndex, endIndex) || [];
 
     const fetchData = async () => {
+      setPageDataLoading(true);
+
       const resolvedData = await Promise.all(
         currentPageData.map(async (row) => {
           const action = row.act.name;
           if (action.toLowerCase() === 'claim') {
-            const claimData = await getTransaction({ queryKey: [, { id: row.trx_id }] });
-            const data = claimData.actions[Math.min(claimData.actions.length - 1, 2)].act.data;
+            const claimData = await getTransaction({
+              queryKey: [, { id: row.trx_id }],
+            });
+            const data =
+              claimData.actions[Math.min(claimData.actions.length - 1, 2)].act
+                .data;
             row.act.data = data;
           }
           return row;
         })
       );
 
-      setResolvedMappedCurrentPageData(
+      setPageDataLoading(false);
+
+      setResolvedMappedCurrentPageData(() =>
         resolvedData as unknown as ResponseGetTransaction['actions']
       );
     };
 
     fetchData();
-  }, [getActionsQuery.isLoading, getActionsQuery.isError, getActionsQuery.dataUpdatedAt]);
+  }, [
+    getActionsQuery.isLoading,
+    getActionsQuery.isError,
+    getActionsQuery.dataUpdatedAt, page, rowsPerPage
+  ]);
 
   if (getActionsQuery.isLoading || resolvedMappedCurrentPageData.length === 0) {
     return <Loading />;
@@ -62,174 +85,158 @@ export default function Transactions({ account }: { account: string }) {
     );
   }
 
-  const handleRowClick = (row: any) => {
-    const url = `/tx/${row.trx_id}`;
-    router.push(url);
-  };
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
-    <div className='w-full overflow-x-auto rounded-md border border-shade-800 bg-shade-900'>
-      <Table aria-label='Last Transactions'>
-        <TableHead>
-          <S.StyledTableRow>
-            <S.StyledTableHeadCell size='medium'>TX HASH</S.StyledTableHeadCell>
-            <S.StyledTableHeadCell size='medium'>DATE</S.StyledTableHeadCell>
-            <S.StyledTableHeadCell size='medium'>ACTION</S.StyledTableHeadCell>
-            <S.StyledTableHeadCell size='medium'>DATA</S.StyledTableHeadCell>
-            <S.StyledTableHeadCell size='medium'>AMOUNT</S.StyledTableHeadCell>
-            <S.StyledTableHeadCell size='medium'>DETAIL</S.StyledTableHeadCell>
-          </S.StyledTableRow>
-        </TableHead>
-        <S.StyledTableBody>
-          {resolvedMappedCurrentPageData.map((row) => (
-            <MotionTableRow
-              className='cursor-pointer hover:bg-[#191919]'
-              key={`${JSON.stringify(row)}`}
-              initial={{ height: 0, opacity: 0 }}
-              animate={{
-                height: 'auto',
-                display: 'table-row',
-                opacity: 1,
-                transition: {
-                  duration: 0.6,
-                },
-              }}
-              exit={{
-                height: 0,
-                opacity: 0,
-                display: 'none',
-                transition: {
-                  duration: 0.2,
-                },
-              }}
-              onClick={() => handleRowClick(row)}
-            >
-              <S.StyledTableCell size='medium'>
-                <div className='max-w-[220px]'>
-                  <Tooltip title={row.trx_id} placement='bottom'>
-                    <Link
-                      href={`/tx/${row.trx_id}`}
-                      className='inline-block max-w-full truncate align-middle text-primary hover:underline'
-                    >
-                      {row.trx_id.slice(0, 6) + '....' + row.trx_id.slice(-6)}
-                    </Link>
-                  </Tooltip>
-                </div>
-              </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>
-                <Tooltip
-                  title={dayjs(row.timestamp)
-                    .utc(true)
-                    .format('MMM DD, YYYY HH:mm:ss A' + ' UTC')}
-                  placement='bottom'
+    <div className='bg-whtie w-full rounded-xl border border-shade-200 p-2'>
+      <div className='w-full overflow-x-auto'>
+        {pageDataLoading ? <Loading /> : (
+          <Table aria-label='Last Transactions'>
+            <TableHead>
+              <S.StyledTableRow>
+                <S.StyledTableHeadCell size='medium'>
+                  Tx Hash
+                </S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size='medium'>Date</S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size='medium'>
+                  Action
+                </S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size='medium'>Data</S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size='medium'>Memo</S.StyledTableHeadCell>
+              </S.StyledTableRow>
+            </TableHead>
+            <S.StyledTableBody>
+              {resolvedMappedCurrentPageData.map((row) => (
+                <MotionTableRow
+                  key={`${JSON.stringify(row)}`}
+                  layout
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{
+                    height: 'auto',
+                    display: 'table-row',
+                    opacity: 1,
+                    transition: {
+                      duration: 0.6,
+                    },
+                  }}
+                  exit={{
+                    height: 0,
+                    opacity: 0,
+                    display: 'none',
+                    transition: {
+                      duration: 0.2,
+                    },
+                  }}
                 >
-                  <div className='inline-block max-w-full truncate align-middle'>
-                    {dayjs(row.timestamp).utc(true).format('MMM DD, YYYY HH:mm:ss A')}
-                  </div>
-                </Tooltip>
-              </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>
-                <span
-                  className={`inline-flex rounded-full px-3 py-1 text-[13px] capitalize ${
-                    row.act.name === 'claim' ? 'bg-orange-700' : 'bg-shade-800'
-                  }`}
-                >
-                  {row.act.name}
-                </span>
-              </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>
-                <div className='flex max-w-[220px] items-center space-x-1'>
-                  <Tooltip title={row.act.data.from} placement='bottom'>
-                    <Link
-                      href={`/address/${row.act.data.from}`}
-                      className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                  <S.StyledTableCell size='medium'>
+                    <div className='max-w-[220px]'>
+                      <Tooltip title={row.trx_id} placement='bottom'>
+                        <Link
+                          href={`/tx/${row.trx_id}`}
+                          className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                        >
+                          {row.trx_id.slice(0, 6) + '....' + row.trx_id.slice(-6)}
+                        </Link>
+                      </Tooltip>
+                    </div>
+                  </S.StyledTableCell>
+                  <S.StyledTableCell size='medium'>
+                    <Tooltip
+                      title={dayjs(row.timestamp)
+                        .utc(true)
+                        .format('MMM DD, YYYY HH:mm:ss A' + ' UTC')}
+                      placement='bottom'
                     >
-                      <span className='inline-block truncate align-middle'>
-                        {row.act.data.from}
-                      </span>
-                    </Link>
-                  </Tooltip>
-                  {row.act.data.to ? <ArrowRight className='h-4 w-4 shrink-0' /> : '-'}
+                      <div className='inline-block w-28 truncate align-middle'>
+                        {/* @ts-ignore */}
+                        <TimeAgo date={dayjs(row.timestamp).utc(true).toDate()} />{' '}
+                        UTC
+                      </div>
+                    </Tooltip>
+                  </S.StyledTableCell>
+                  <S.StyledTableCell size='medium'>
+                    {row.act.name}
+                  </S.StyledTableCell>
+                  <S.StyledTableCell size='medium'>
+                    <div className='flex items-center space-x-3'>
+                      <div className='flex max-w-[220px] items-center space-x-1'>
+                        <Tooltip title={row.act.data.from} placement='bottom'>
+                          <Link
+                            href={`/address/${row.act.data.from}`}
+                            className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                          >
+                            <span className='inline-block truncate align-middle'>
+                              {row.act.data.from}
+                            </span>
+                          </Link>
+                        </Tooltip>
+                        {row.act.data.to ? (
+                          <ArrowRight className='h-4 w-4 shrink-0' />
+                        ) : (
+                          '-'
+                        )}
+                        <Tooltip title={row.act.data.to} placement='bottom'>
+                          <Link
+                            href={`/address/${row.act.data.to}`}
+                            className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                          >
+                            <span className='inline-block truncate align-middle'>
+                              {row.act.data.to}
+                            </span>{' '}
+                          </Link>
+                        </Tooltip>
+                      </div>
+                      {row.act.data.amount && (
+                        <div className='flex min-w-max items-center space-x-1 rounded border border-shade-200 p-1 text-sm'>
+                          <Tooltip title={row.act.data.amount} placement='bottom'>
+                          <span>
+  {typeof row.act.data.amount === 'number'
+    ? (row.act.data.symbol === 'PBTC' ? row.act.data.amount.toFixed(9) : row.act.data.amount.toFixed(2))
+    : '-'}
+</span>
 
-                  <Tooltip title={row.act.data.to} placement='bottom'>
-                    <Link
-                      href={`/address/${row.act.data.to}`}
-                      className='inline-block max-w-full truncate align-middle text-primary hover:underline'
-                    >
-                      <span className='inline-block truncate align-middle'>{row.act.data.to}</span>{' '}
-                    </Link>
-                  </Tooltip>
-                </div>
-              </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>
-                <span className='inline-flex min-w-max rounded-full bg-shade-800 px-2 py-1 text-[13px] capitalize'>
-                  <span>{row.act.data.quantity} </span>
-                  {row.act.data.quantity && row.act.data.quantity.includes('LIBRE') && (
-                    <img
-                      src='/images/symbols/LIBRE.svg'
-                      alt='LIBRE Icon'
-                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
-                    />
-                  )}
-                  {row.act.data.quantity && row.act.data.quantity.includes('PBTC') && (
-                    <img
-                      src='/images/symbols/PBTC.svg'
-                      alt='PBTC Icon'
-                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
-                    />
-                  )}
-                  {row.act.data.quantity && row.act.data.quantity.includes('BTCLIB') && (
-                    <img
-                      src='/images/symbols/BTCLIB.svg'
-                      alt='BTCLIB Icon'
-                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
-                    />
-                  )}
-                  {row.act.data.quantity && row.act.data.quantity.includes('PUSDT') && (
-                    <img
-                      src='/images/symbols/PUSDT.svg'
-                      alt='PUSDT Icon'
-                      className='ml-1 block h-5 w-5 flex-auto shrink-0 object-contain'
-                    />
-                  )}
-                </span>
-              </S.StyledTableCell>
-              <S.StyledTableCell size='medium'>
-                <div className='max-w-[220px]'>
-                  <Tooltip title={row.act.data.memo} placement='bottom'>
-                    <span className='inline-block max-w-full truncate align-middle'>
-                      {row.act.data.memo}
-                    </span>
-                  </Tooltip>
-                </div>
-              </S.StyledTableCell>
-            </MotionTableRow>
-          ))}
-        </S.StyledTableBody>
-      </Table>
-      <div className='sticky left-0 min-w-max'>
-        <S.StyledTablePagination
-          component='div'
-          rowsPerPageOptions={[10, 25, 50, 100]}
-          count={-1}
-          labelRowsPerPage='Rows:'
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-        />
+                          </Tooltip>
+                          <img
+                            src={`/images/symbols/${row.act.data.symbol}.svg`}
+                            alt=''
+                            className='block h-5 w-5 shrink-0 object-contain'
+                          />
+                          <span className='font-semibold'>
+                            {row.act.data.symbol}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </S.StyledTableCell>
+                  <S.StyledTableCell size='medium'>
+                    <div className='max-w-[220px]'>
+                      <Tooltip title={row.act.data.memo} placement='bottom'>
+                        <span className='inline-block max-w-full truncate align-middle'>
+                          {row.act.data.memo}
+                        </span>
+                      </Tooltip>
+                    </div>
+                  </S.StyledTableCell>
+                </MotionTableRow>
+              ))}
+            </S.StyledTableBody>
+          </Table>
+        )}
       </div>
+      <CustomPagination
+        dataLength={totalPages ?? 0}
+        onPageChange={(value) => setPage(value)}
+        rowsPerPage={rowsPerPage}
+      />
+    </div>
+  );
+};
+
+export default function Transactions({ account }: { account: string }) {
+  return (
+    <div>
+      <div className='mb-3 flex items-end justify-between'>
+        <h4 className='mb-3 text-2xl font-semibold'>Transactions</h4>
+      </div>
+      <TransactionsTable account={account} />
     </div>
   );
 }

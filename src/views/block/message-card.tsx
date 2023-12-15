@@ -3,18 +3,29 @@
 import Link from 'next/link';
 import type { MessageCardProps } from './types';
 
-const MessageRow = ({ property, value }: { property: number | string; value: number | string }) => {
+const MessageRow = ({
+  property,
+  value,
+}: {
+  property: number | string;
+  value: number | string;
+}) => {
   const isLink = property === 'from' || property === 'to';
 
   return (
     <div>
       <p className='font-semibold capitalize'>{property}</p>
       {isLink ? (
-        <Link href={`/address/${value}`} className='text-primary hover:underline'>
+        <Link
+          href={`/address/${value}`}
+          className='text-primary hover:underline'
+        >
           {value}
         </Link>
       ) : (
-        <div className='flex-col justify-between break-words  text-primary'>{value}</div>
+        <div className='flex-col justify-between break-words  text-primary'>
+          {value}
+        </div>
       )}
     </div>
   );
@@ -22,8 +33,8 @@ const MessageRow = ({ property, value }: { property: number | string; value: num
 
 export default function BlockMessageCard({ name, data }: MessageCardProps) {
   return (
-    <div className='rounded-md border border-shade-800 bg-shade-900'>
-      <div className='border-b border-shade-800 px-5 py-2.5'>
+    <div className='rounded-md border border-shade-200 bg-white'>
+      <div className='border-b border-shade-200 px-5 py-2.5'>
         <p className='font-semibold uppercase'>{name}</p>
       </div>
       <div className='space-y-3 p-5'>
@@ -59,7 +70,7 @@ export default function BlockMessageCard({ name, data }: MessageCardProps) {
           <div>
             <p className='font-semibold'>Value</p>
             <div className='mt-1.5'>
-              <div className='align-center inline-block rounded-md border border-shade-800 bg-black p-3'>
+              <div className='align-center inline-block rounded-md border border-shade-200 bg-white p-3'>
                 <p className='font-semibold'>{data.quantity}</p>
               </div>
             </div>

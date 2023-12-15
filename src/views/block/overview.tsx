@@ -1,3 +1,5 @@
+'use client';
+
 import type { OverviewProps } from './types';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -5,7 +7,9 @@ import * as React from 'react';
 import TimeAgo from 'react-timeago';
 
 export default function TxOverview({ data }: OverviewProps) {
-  const [actionState, setActionState] = React.useState<'pending' | 'irreversible'>('pending');
+  const [actionState, setActionState] = React.useState<
+    'pending' | 'irreversible'
+  >('pending');
   const timestamp = data.timestamp;
   const difference = dayjs(timestamp).diff(dayjs(), 'minute');
 
@@ -29,15 +33,19 @@ export default function TxOverview({ data }: OverviewProps) {
   }, []);
 
   const totalActionsLength =
-    data.transactions.reduce((acc, item) => acc + item.trx.transaction.actions.length, 0) || 0;
+    data.transactions.reduce(
+      (acc, item) => acc + item.trx.transaction.actions.length,
+      0
+    ) || 0;
 
   return (
-    <div className='divide-y divide-shade-800 rounded-xl border border-shade-800 bg-black pb-5 text-white'>
+    <div className='divide-y divide-shade-200 rounded-xl border border-shade-200 bg-white pb-5'>
       <div className='p-5'>
-        <div className='align-center inline-block rounded-full bg-primary px-3 py-1.5 text-xs font-medium capitalize'>
+        <div className='align-center inline-block rounded-full bg-primary px-3 py-1.5 text-xs font-medium capitalize text-white'>
           {actionState}
         </div>
         <p className='mt-5 text-sm'>
+          {/* @ts-ignore */}
           <TimeAgo title='' date={dayjs(timestamp).utc(true).toDate()} />
           <br />
           {dayjs(timestamp).utc(true).format('MMM DD, YYYY h:mm A')} UTC
@@ -46,7 +54,10 @@ export default function TxOverview({ data }: OverviewProps) {
       <div className='flex items-center justify-between px-5 py-3'>
         <p>Block</p>
         <p className='font-semibold'>
-          <Link href={`/block/${data.block_num}`} className='text-primary hover:underline'>
+          <Link
+            href={`/block/${data.block_num}`}
+            className='text-primary hover:underline'
+          >
             {data.block_num}
           </Link>
         </p>
@@ -67,12 +78,16 @@ export default function TxOverview({ data }: OverviewProps) {
 
       <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>CPU Usage</p>
-        <p className='text-right font-semibold'>{data.transactions[0].cpu_usage_us} µs</p>
+        <p className='text-right font-semibold'>
+          {data.transactions[0].cpu_usage_us} µs
+        </p>
       </div>
 
       <div className='flex items-center justify-between space-x-2 px-5 py-3'>
         <p>NET Usage</p>
-        <p className='text-right font-semibold'>{data.transactions[0].net_usage_words}</p>
+        <p className='text-right font-semibold'>
+          {data.transactions[0].net_usage_words}
+        </p>
       </div>
 
       <div className=' flex-col items-start justify-between break-words px-5 py-3'>

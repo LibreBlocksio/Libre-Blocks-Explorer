@@ -1,13 +1,13 @@
 const API_URLS = [
   {
-    key: "mainnet",
-    label: "Mainnet",
+    key: 'mainnet',
+    label: 'Mainnet',
     url: process.env.NEXT_PUBLIC_MAINNET_API,
     default: true,
   },
   {
-    key: "testnet",
-    label: "Testnet",
+    key: 'testnet',
+    label: 'Testnet',
     url: process.env.NEXT_PUBLIC_TESTNET_API,
   },
 ];

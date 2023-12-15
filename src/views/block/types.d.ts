@@ -1,9 +1,5 @@
 import type { ResponseGetBlock } from '@/types';
 
-export type ViewProps = {
-  data: ResponseGetBlock;
-};
-
 export type OverviewProps = {
   data: ResponseGetBlock;
 };

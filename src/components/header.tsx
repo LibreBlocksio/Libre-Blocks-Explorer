@@ -1,119 +1,104 @@
-import * as React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import * as Dialog from "@radix-ui/react-dialog";
-import clsx from "clsx";
-import { motion } from "framer-motion";
-import { AlignRight, X } from "lucide-react";
-import { useLocalStorage } from "usehooks-ts";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { StyledIconButton, StyledLinkButton } from "@/components/button";
-import API_URLS from "@/api-urls";
+'use client';
+
+import * as React from 'react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import clsx from 'clsx';
+import { AlignRight } from 'lucide-react';
+import { useLocalStorage } from 'usehooks-ts';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import Button from '@/components/button';
+import API_URLS from '@/api-urls';
+import HeaderSearch from './header-search';
 
 const links = [
   {
-    url: "/",
-    label: "Home",
-  },
-
-  {
-    url: "https://defi.libre.org/",
-    label: "DeFi",
-    badge: "new",
+    url: '/',
+    label: 'Dashboard',
   },
   {
-    url: "https://beta.libredex.org/",
-    label: "LibreDex",
-    badge: "Beta",
+    url: '/validators',
+    label: 'Validators',
   },
   {
-    url: "/generate",
-    label: "Generate",
-  },
-  {
-    url: "/validators",
-    label: "Validators",
-  },
-  {
-    url: "/tokens",
-    label: "Tokens",
+    url: '/tokens',
+    label: 'Tokens',
   },
 ];
 
 export default function Header() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
-  const dynamicRoute = router.asPath;
   const [selectedApiUrl, setSelectedApiUrl] = useLocalStorage(
-    "apiUrl",
+    'apiUrl',
     API_URLS.find((k) => k.default)?.url
   );
-  const providerName = process.env.NEXT_PUBLIC_PROVIDER_NAME;
 
   React.useEffect(() => {
-    // close menu on page change
     setOpen(() => false);
-  }, [dynamicRoute]);
-
+  }, [searchParams, pathname]);
+  const providerLink = process.env.NEXT_PUBLIC_PROVIDER_LINK;
+  const providerLogo = process.env.NEXT_PUBLIC_PROVIDER_LOGO;
   return (
     <>
-      <header className="border-b border-line">
-        <div className="container">
-          <div className="flex h-24 items-center justify-between space-x-3">
-            <Link href="/" className="lg:shrink-0">
-              <img
-                src="/images/logo.svg"
-                alt="Logo"
-                width={270}
-                height={41}
-                className="mb-2 h-8 object-contain object-left lg:h-auto"
-              />
-              <span className="flex text-sm md:justify-end">
-                Data Provider: {providerName}
-              </span>
-            </Link>
+      <header className='border-b border-shade-200'>
+        <div className='container'>
+          <div className='grid grid-cols-[auto,minmax(0,1fr),auto] items-center py-4 lg:h-24 lg:space-x-6 lg:py-0'>
+            <div className="lg:shrink-0">
+              <Link href='/' className='block'>
+                <img
+                  src='/images/logo.svg'
+                  alt='Logo'
+                  width={260}
+                  height={42}
+                  className='h-6 w-auto object-contain object-left sm:h-8 lg:h-auto'
+                />
+              </Link>
+              <Link href={process.env.NEXT_PUBLIC_PROVIDER_LINK as string} className="flex items-center space-x-1 text-sm font-medium justify-end">
+                <span>Provided by {process.env.NEXT_PUBLIC_PROVIDERBY}</span>
+                <img
+                  src={process.env.NEXT_PUBLIC_PROVIDER_LOGO}
+                  alt='Logo'
+                  width={24}
+                  height={24}
+                  className='h-6 w-6 rounded-full'
+                />
+              </Link>
+            </div>
 
-            <div className="hidden h-full items-center space-x-5 lg:flex">
+            <HeaderSearch className='col-start-1 col-end-[-1] row-start-2 row-end-3 mt-5 lg:col-start-auto lg:col-end-auto lg:row-start-auto lg:row-end-auto lg:mt-0' />
+
+            <div className='hidden h-full min-w-0 items-center space-x-6 lg:flex'>
               {links.map((item, i) => (
                 <Link
                   key={i}
                   href={item.url}
                   className={clsx(
-                    "flex items-center border-b-3  font-medium tracking-wide hover:text-primary",
+                    'font-medium text-shade-900 transition hover:text-opacity-70',
                     {
-                      "border-primary text-primary":
-                        router.pathname === item.url,
-                      "border-transparent text-white":
-                        router.pathname !== item.url,
+                      underline: pathname === item.url,
                     }
                   )}
                 >
                   {item.label}
-                  {item.badge && (
-                    <span className="relative ml-1 rounded bg-primary px-1 py-1 text-xs text-white">
-                      {item.badge}
-                    </span>
-                  )}
                 </Link>
               ))}
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <button
-                    className="text-md rounded-full  px-3 py-2 text-white outline-none ring-1 ring-white/20 transition hover:bg-white/10"
-                    suppressHydrationWarning
-                  >
+                  <Button suppressHydrationWarning>
                     {
                       API_URLS.find((apiUrl) => apiUrl.url === selectedApiUrl)
                         ?.label
                     }
-                  </button>
+                  </Button>
                 </DropdownMenu.Trigger>
 
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="w-40 rounded-md bg-black/90 py-1 text-white ring-1 ring-white/20 animate-in fade-in-20"
+                    className='w-40 rounded-md border border-shade-200 bg-white py-1 text-shade-900 animate-in fade-in-20'
                     sideOffset={5}
-                    align="end"
+                    align='end'
                   >
                     {API_URLS.map((apiUrl) => (
                       <DropdownMenu.Item asChild key={apiUrl.key}>
@@ -124,11 +109,11 @@ export default function Header() {
                               window.location.reload();
                             }, 150);
                           }}
-                          className="flex w-full items-center justify-between space-x-3 px-4 py-1 text-left text-sm outline-none transition hover:bg-white/10"
+                          className='flex w-full items-center justify-between space-x-3 px-4 py-1 text-left text-sm outline-none transition hover:bg-white/10'
                         >
                           <span>{apiUrl.label}</span>
                           {apiUrl.url === selectedApiUrl && (
-                            <span className="block h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
+                            <span className='block h-2 w-2 shrink-0 rounded-full bg-green-500'></span>
                           )}
                         </button>
                       </DropdownMenu.Item>
@@ -138,25 +123,22 @@ export default function Header() {
               </DropdownMenu.Root>
             </div>
 
-            <div className="flex items-center space-x-2.5 lg:hidden">
+            <div className='ml-auto flex min-w-0 items-center space-x-2.5 lg:hidden'>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <button
-                    className="rounded-full px-3 py-2 text-xs font-medium text-white outline-none ring-1 ring-white/20 transition hover:bg-white/10"
-                    suppressHydrationWarning
-                  >
+                  <Button suppressHydrationWarning>
                     {
                       API_URLS.find((apiUrl) => apiUrl.url === selectedApiUrl)
                         ?.label
                     }
-                  </button>
+                  </Button>
                 </DropdownMenu.Trigger>
 
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="w-40 rounded-md bg-black/90 py-1 text-white ring-1 ring-white/20 animate-in fade-in-20"
+                    className='w-40 rounded-md border border-shade-200 bg-white py-1 text-shade-900 animate-in fade-in-20'
                     sideOffset={5}
-                    align="end"
+                    align='end'
                   >
                     {API_URLS.map((apiUrl) => (
                       <DropdownMenu.Item asChild key={apiUrl.key}>
@@ -167,11 +149,11 @@ export default function Header() {
                               window.location.reload();
                             }, 150);
                           }}
-                          className="flex w-full items-center justify-between space-x-3 px-4 py-1 text-left text-sm outline-none transition hover:bg-white/10"
+                          className='flex w-full items-center justify-between space-x-3 px-4 py-1 text-left text-sm outline-none transition hover:bg-shade-100'
                         >
                           <span>{apiUrl.label}</span>
                           {apiUrl.url === selectedApiUrl && (
-                            <span className="block h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
+                            <span className='block h-2 w-2 shrink-0 rounded-full bg-green-500'></span>
                           )}
                         </button>
                       </DropdownMenu.Item>
@@ -180,61 +162,38 @@ export default function Header() {
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
 
-              <Dialog.Root open={open} onOpenChange={setOpen}>
-                <Dialog.Trigger asChild>
-                  <StyledIconButton aria-label="Open Menu">
-                    <AlignRight className="h-6 w-6 text-white" />
-                  </StyledIconButton>
-                </Dialog.Trigger>
-                <Dialog.Portal>
-                  <Dialog.Content className="fixed inset-0 z-50 bg-black bg-opacity-90 px-3 backdrop-blur-sm">
-                    <div className="flex h-18 items-center justify-between">
-                      <Link href="/" className="shrink-0">
-                        <img
-                          src="/images/logo.svg"
-                          alt="Logo"
-                          width={208}
-                          height={41}
-                        />
-                      </Link>
-                      <Dialog.Close asChild>
-                        <StyledIconButton aria-label="Close Menu">
-                          <X className="h-6 w-6 text-white" />
-                        </StyledIconButton>
-                      </Dialog.Close>
-                    </div>
+              <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+                <DropdownMenu.Trigger asChild>
+                  <button className='flex h-10 w-10 items-center justify-center rounded-md border border-shade-300 transition hover:bg-shade-100'>
+                    <AlignRight className='h-6 w-6 text-neutral-900' />
+                  </button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className='w-40 rounded-md border border-shade-200 bg-white py-1 text-shade-900 animate-in fade-in-20'
+                    sideOffset={5}
+                    align='end'
+                  >
                     <div>
                       {links.map((item, i) => (
-                        <StyledLinkButton
-                          LinkComponent={Link}
+                        <Link
                           key={i}
                           href={item.url}
+                          className={clsx(
+                            'flex w-full items-center justify-between space-x-3 px-4 py-1 text-left text-sm outline-none transition hover:bg-shade-100',
+                            {
+                              'font-medium text-primary': pathname === item.url,
+                              'text-shade-900': pathname !== item.url,
+                            }
+                          )}
                         >
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2 }}
-                            className={clsx(
-                              "block w-full p-3 text-right text-base font-medium tracking-wide",
-                              {
-                                "text-primary": router.pathname === item.url,
-                                "text-white": router.pathname !== item.url,
-                              }
-                            )}
-                          >
-                            {item.label}
-                            {item.badge && (
-                              <span className="relative ml-1 rounded bg-primary px-1 py-1 text-xs text-white">
-                                New
-                              </span>
-                            )}
-                          </motion.span>
-                        </StyledLinkButton>
+                          {item.label}
+                        </Link>
                       ))}
                     </div>
-                  </Dialog.Content>
-                </Dialog.Portal>
-              </Dialog.Root>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
             </div>
           </div>
         </div>

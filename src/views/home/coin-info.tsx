@@ -1,11 +1,12 @@
+'use client';
+
 import * as React from 'react';
-import IconCirculatingSupply from '~/icons/icon-circulating-supply.svg';
-import IconMarketCap from '~/icons/icon-market-cap.svg';
-import IconTotalSupply from '~/icons/icon-total-supply.svg';
 import ImageLibre from '~/images/libre.svg';
+import ImageLibreWhite from '~/images/libre-white.svg';
 
 import { useCoinInfo, useExchangeRates } from '@/hooks/api';
 import { currencyFormat, numberFormat } from '@/utils/number';
+import Button from '@/components/button';
 
 export default function CoinInfo() {
   const coinInfoQuery = useCoinInfo();
@@ -16,66 +17,76 @@ export default function CoinInfo() {
   }
 
   if (coinInfoQuery.isError || exchangeRatesQuery.isError) {
-    return <span>Error: {coinInfoQuery.error?.message || exchangeRatesQuery.error?.message}</span>;
+    return (
+      <span>
+        Error:{' '}
+        {coinInfoQuery.error?.message || exchangeRatesQuery.error?.message}
+      </span>
+    );
   }
 
-  const libreData = coinInfoQuery.data.find((item) => item.name === 'LIBRE')!;
+  const { data } = coinInfoQuery;
+
+  if (!data) {
+    return null;
+  }
+
+  const libreData = data.find((item) => item.name === 'LIBRE')!;
 
   return (
     <div>
-      <h4 className='mb-4 text-xl font-semibold text-white'>Coin info</h4>
-      <div className='divide-y divide-shade-800 rounded-xl border border-shade-800 bg-black text-base text-white'>
-        <div className='flex items-center space-x-4 p-5'>
-          <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-shade-800 bg-shade-900'>
-            <ImageLibre className='h-6.5 w-6.5 object-contain' />
+      <h4 className='mb-3 text-2xl font-semibold'>Coin Info</h4>
+      <div className='rounded-xl border border-shade-200 bg-white p-5 text-base'>
+        <div className='-mt-4 mb-5 flex flex-wrap items-center justify-between'>
+          <div className='flex items-center space-x-2 pt-4'>
+            <ImageLibre className='h-11 w-11 object-contain' />
+            <div className='mr-2 text-4xl font-semibold'>LIBRE</div>
           </div>
-          <div>
-            <div className='flex items-center'>
-              <div className='mr-2 text-2xl font-semibold'>LIBRE</div>
-              <a href='https://www.coingecko.com/en/coins/libre' target='_blank'>
+          <div className='flex items-center pt-4'>
+            <div className='flex items-center space-x-2'>
+              <a
+                href='https://www.coingecko.com/en/coins/libre'
+                target='_blank'
+                className='shrink-0'
+              >
                 <img
-                  className='mr-2 h-7 transition-transform duration-300 hover:scale-110'
+                  className='block h-9 w-9 object-contain'
                   src='\icons\coingecko.svg'
                 />
               </a>
-              <a href='https://coinmarketcap.com/currencies/libre/' target='_blank'>
-                <img
-                  className='h-7 transition-transform duration-300 hover:scale-110'
-                  src='\icons\coinmarketcap.svg'
-                />
-              </a>
+              <Button asChild>
+                <a
+                  href='https://dashboard.libre.org/swap'
+                  target='_blank'
+                >
+                  <ImageLibreWhite className='mr-2 h-4 w-4' />
+                  Buy $LIBRE
+                </a>
+              </Button>
             </div>
-
-            <div className='font-semibold'>{currencyFormat(exchangeRatesQuery.data.LIBRE, 6)}</div>
           </div>
         </div>
-        <div className='flex items-center justify-between px-5 py-4'>
-          <div className='flex items-center space-x-3'>
-            <IconMarketCap className='h-5 w-5 shrink-0 text-shade-400' />
-            <span>Market Cap</span>
-          </div>
-          <span>{currencyFormat(libreData.marketCap)}</span>
+        <div className='flex items-center justify-between border-b border-shade-200 pb-2 pt-5'>
+          <span className='font-medium text-shade-600'>Market Cap</span>
+          <span className='font-bold'>
+            {currencyFormat(libreData.marketCap)}
+          </span>
         </div>
-        <div className='flex items-center justify-between px-5 py-4'>
-          <div className='flex items-center space-x-3'>
-            <IconMarketCap className='h-5 w-5 shrink-0 text-shade-400' />
-            <span>Staked</span>
-          </div>
-          <span>{numberFormat(libreData.staked, 2)}%</span>
+        <div className='flex items-center justify-between border-b border-shade-200 pb-2 pt-5'>
+          <span className='font-medium text-shade-600'>Staked</span>
+          <span className='font-bold text-primary'>
+            {numberFormat(libreData.staked, 2)}%
+          </span>
         </div>
-        <div className='flex items-center justify-between px-5 py-4'>
-          <div className='flex items-center space-x-3'>
-            <IconCirculatingSupply className='h-5 w-5 shrink-0 text-shade-400' />
-            <span>Circulating Supply</span>
-          </div>
-          <span>{numberFormat(libreData.supply, 2)}</span>
+        <div className='flex items-center justify-between border-b border-shade-200 pb-2 pt-5'>
+          <span className='font-medium text-shade-600'>Circulating Supply</span>
+          <span className='font-bold text-primary'>
+            {numberFormat(libreData.supply, 2)}
+          </span>
         </div>
-        <div className='flex items-center justify-between px-5 py-4'>
-          <div className='flex items-center space-x-3'>
-            <IconTotalSupply className='h-5 w-5 shrink-0 text-shade-400' />
-            <span>Total Supply</span>
-          </div>
-          <span>{numberFormat(10000000000)}</span>
+        <div className='flex items-center justify-between border-b border-shade-200 pb-2 pt-5'>
+          <span className='font-medium text-shade-600'>Total Supply</span>
+          <span className='font-bold'>{numberFormat(10000000000)}</span>
         </div>
       </div>
     </div>

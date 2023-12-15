@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import * as S from '@/styles/tabs';
 import type { TabsProps, TabPanelProps, MessageCardProps } from './types';
@@ -41,8 +43,8 @@ export default function BlockTabs({ transactions }: TabsProps) {
 
   return (
     <>
-      <div className='rounded-xl border border-shade-800 bg-black text-white'>
-        <div className='border-b border-shade-800 px-5'>
+      <div className='rounded-xl border border-shade-200 bg-white'>
+        <div className='border-b border-shade-200 px-5'>
           <S.StyledTabs value={value} onChange={handleChange} aria-label='tabs'>
             <S.StyledTab label={`Transactions (${allMessages.length})`} />
           </S.StyledTabs>

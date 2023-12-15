@@ -1,16 +1,18 @@
+'use client';
+
 import { Tabs, Tab } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const StyledTabs = styled(Tabs)(({ theme }) => ({
   '.MuiTabs-indicator': {
-    backgroundColor: 'rgb(255 98 0)',
+    backgroundColor: 'rgb(79 79 222)',
     height: 4,
   },
 }));
 
 export const StyledTab = styled(Tab)(({ theme }) => ({
   fontFamily: 'var(--font-inter)',
-  color: '#fff',
+  color: '#000',
   display: 'inline-flex',
   WebkitBoxAlign: 'center',
   alignItems: 'center',
@@ -36,6 +38,6 @@ export const StyledTab = styled(Tab)(({ theme }) => ({
   textAlign: 'center',
   flexDirection: 'column',
   '&.Mui-selected': {
-    color: 'rgb(255 98 0)',
+    color: 'rgb(79 79 222)',
   },
 }));

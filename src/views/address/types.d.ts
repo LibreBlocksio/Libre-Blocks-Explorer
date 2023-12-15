@@ -6,7 +6,6 @@ export type ViewProps = {
 
 export type OverviewProps = Pick<ResponseGetAccount, 'tokens'>;
 
-
 export type StakeDetailsProps = {
   data: Array<{ name: string; value: number | string }>;
 };

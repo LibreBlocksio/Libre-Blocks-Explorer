@@ -1,3 +1,5 @@
+'use client';
+
 import { TableBody, TableCell, TablePagination, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -10,42 +12,41 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   lineHeight: '1.5rem',
-  letterSpacing: '0.01071em',
   display: 'table-cell',
   verticalAlign: 'inherit',
-  borderBottom: '1px solid rgb(49, 48, 48)',
+  borderBottom: '1px solid rgb(229, 229, 229)',
   textAlign: 'left',
-  color: 'rgb(255, 255, 255)',
+  color: 'rgb(23, 23, 23)',
   fontFamily: 'inherit',
-  padding: '12px 10px 10px 0px',
-  borderTopColor: 'rgb(49, 48, 48)',
-  borderRightColor: 'rgb(49, 48, 48)',
-  borderLeftColor: 'rgb(49, 48, 48)',
-  fontWeight: '600',
-  fontSize: '0.75rem',
+  padding: '16px 10px 10px 0px',
+  borderTopColor: 'rgb(229, 229, 229)',
+  borderRightColor: 'rgb(229, 229, 229)',
+  borderLeftColor: 'rgb(229, 229, 229)',
+  fontWeight: '700',
+  fontSize: '15px',
   '&:first-of-type': {
     paddingLeft: 20,
   },
 }));
 
 export const StyledTableBody = styled(TableBody)(({ theme }) => ({
-  backgroundColor: '#000',
+  backgroundColor: '#fff',
 }));
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: '350',
-  fontSize: '0.875rem',
+  fontWeight: '500',
+  fontSize: '13.75px',
   letterSpacing: '0.01071em',
   display: 'table-cell',
   verticalAlign: 'inherit',
-  borderBottom: '1px solid rgb(49, 48, 48)',
+  borderBottom: '1px solid rgb(229, 229, 229)',
   textAlign: 'left',
-  color: 'rgb(255, 255, 255)',
+  color: 'rgb(23, 23, 23)',
   fontFamily: 'inherit',
-  padding: '12px 20px 12px 0px',
-  borderTopColor: 'rgb(49, 48, 48)',
-  borderRightColor: 'rgb(49, 48, 48)',
-  borderLeftColor: 'rgb(49, 48, 48)',
+  padding: '12px 12px 12px 0px',
+  borderTopColor: 'rgb(229, 229, 229)',
+  borderRightColor: 'rgb(229, 229, 229)',
+  borderLeftColor: 'rgb(229, 229, 229)',
   lineHeight: '22px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -55,20 +56,20 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-export const StyledTablePagination = styled(TablePagination)<{ component?: string }>(
-  ({ theme }) => ({
-    color: 'rgb(255, 255, 255)',
-    borderBottomWidth: 0,
-    overflow: 'visible',
-    '.MuiIconButton-root': {
-      '&.Mui-disabled': {
-        color: 'rgba(255, 255, 255, .5)',
-      },
+export const StyledTablePagination = styled(TablePagination)<{
+  component?: string;
+}>(({ theme }) => ({
+  color: 'rgb(23, 23, 23)',
+  borderBottomWidth: 0,
+  overflow: 'visible',
+  '.MuiIconButton-root': {
+    '&.Mui-disabled': {
+      color: 'rgba(23,23,23, .5)',
     },
-    '.MuiInputBase-root': {
-      '.MuiSvgIcon-root': {
-        color: 'rgb(255, 255, 255)',
-      },
+  },
+  '.MuiInputBase-root': {
+    '.MuiSvgIcon-root': {
+      color: 'rgb(23, 23, 23)',
     },
-  })
-);
+  },
+}));

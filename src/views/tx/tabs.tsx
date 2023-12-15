@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import * as S from '@/styles/tabs';
 import TxMessageCard from './message-card';
@@ -22,12 +24,15 @@ export default function TxTabs({ actions }: TabsProps) {
   };
 
   let logCardOrder = 0;
-  const totalLogCardsLength = actions.reduce((acc, action) => acc + action.receipts.length, 0);
+  const totalLogCardsLength = actions.reduce(
+    (acc, action) => acc + action.receipts.length,
+    0
+  );
 
   return (
     <>
-      <div className='rounded-xl border border-shade-800 bg-black text-white'>
-        <div className='border-b border-shade-800 px-5'>
+      <div className='rounded-xl border border-shade-200 bg-white'>
+        <div className='border-b border-shade-200 px-5'>
           <S.StyledTabs value={value} onChange={handleChange} aria-label='tabs'>
             <S.StyledTab label={`Actions (${actions.length})`} />
             <S.StyledTab label={`logs (${totalLogCardsLength})`} />
@@ -36,7 +41,11 @@ export default function TxTabs({ actions }: TabsProps) {
         <TabPanel value={value} index={0}>
           <div className='space-y-5 p-5'>
             {actions.map((action, i) => (
-              <TxMessageCard key={i} name={action.act.name} message={action.act.data} />
+              <TxMessageCard
+                key={i}
+                name={action.act.name}
+                message={action.act.data}
+              />
             ))}
           </div>
         </TabPanel>
@@ -44,7 +53,11 @@ export default function TxTabs({ actions }: TabsProps) {
           <div className='space-y-5 p-5'>
             {actions.map((action, i) =>
               action.receipts.map((receipt, j) => (
-                <TxLogCard key={`${i}-${j}`} index={++logCardOrder} {...receipt} />
+                <TxLogCard
+                  key={`${i}-${j}`}
+                  index={++logCardOrder}
+                  {...receipt}
+                />
               ))
             )}
           </div>

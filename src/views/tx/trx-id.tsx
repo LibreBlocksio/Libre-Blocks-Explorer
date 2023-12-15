@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { Copy, Check } from 'lucide-react';
 import type { TrxIdProps } from './types';
@@ -26,7 +28,9 @@ export default function TrxID({ trx_id }: TrxIdProps) {
 
   return (
     <div className='flex items-center'>
-      <span className='block truncate text-base font-semibold'>TXID: {trx_id}</span>
+      <span className='block truncate text-base font-semibold'>
+        TXID: {trx_id}
+      </span>
       <button className='relative ml-2' onClick={() => copy()}>
         {state === 'copied' ? (
           <Check className='h-5 w-5 text-green-500' strokeWidth={3} />
