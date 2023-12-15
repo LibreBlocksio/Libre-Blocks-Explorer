@@ -30,6 +30,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' className={clsx(fontSans.variable)}>
+
+      <meta name="description" content="Explore transactions, blocks, account for the Libre Blockchain." />
+
+
+      <meta property="og:url" content="https://libreblocks.io/" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Libre Blockchain Explorer" />
+      <meta property="og:description" content="Explore transactions, blocks, account for the Libre Blockchain." />
+      <meta property="og:image" content="/images/og.png" />
+
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta property="twitter:domain" content="libreblocks.io" />
+      <meta property="twitter:url" content="https://libreblocks.io/" />
+      <meta name="twitter:title" content="Libre Blockchain Explorer" />
+      <meta name="twitter:description" content="Explore transactions, blocks, account for the Libre Blockchain." />
+      <meta name="twitter:image" content="" />
+
+
+
       <body className='min-h-screen text-shade-900 antialiased'>
         <GlobalComponents />
         <Announcement />
