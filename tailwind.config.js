@@ -18,13 +18,13 @@ module.exports = {
       },
       colors: {
         primary: {
-          DEFAULT: '#FF6200',
+          DEFAULT: '#4f4fde',
         },
         shade: {
           ...colors.neutral,
         },
         line: {
-          DEFAULT: 'rgb(225 225 255 / .12)',
+          DEFAULT: colors.neutral[100],
         },
       },
       borderWidth: {
@@ -38,7 +38,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require("tailwindcss-animate"),
+    require('tailwindcss-animate'),
     function ({ addComponents }) {
       addComponents({
         '.container': {
@@ -47,11 +47,8 @@ module.exports = {
           paddingRight: '.75rem',
           marginLeft: 'auto',
           marginRight: 'auto',
-          '@media (min-width: 980px)': {
-            maxWidth: '980px',
-          },
           '@media (min-width: 1366px)': {
-            maxWidth: '1248px',
+            maxWidth: '1320px',
           },
         },
       });
