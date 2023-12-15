@@ -38,7 +38,7 @@ export default function RootLayout({
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Libre Blockchain Explorer" />
       <meta property="og:description" content="Explore transactions, blocks, account for the Libre Blockchain." />
-      <meta property="og:image" content="/images/og.png" />
+      <meta property="og:image" content="https://www.libreblocks.io/images/og.png" />
 
 
       <meta name="twitter:card" content="summary_large_image" />
