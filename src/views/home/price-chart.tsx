@@ -117,7 +117,7 @@ const Chart = () => {
           </div>
           <div className='flex items-center justify-between border-shade-200 pb-1 pt-3'>
             <span className='font-medium text-shade-600'>Libre/SATS</span>
-            <span className='font-bold text-primary'>{staked}</span>
+            <span className='font-bold text-primary'>-</span>
           </div>
         </div>
       </div>
