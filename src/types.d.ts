@@ -346,7 +346,6 @@ export type ResponseGetTokens = {
 
 export type ResponseGetDefillama = string;
 
-
 export type ParamsGetBlock = {
   block_num_or_id: string;
 };
@@ -421,5 +420,20 @@ export type ResponseOrdinalsMarketcap = {
     totalSupply: number;
     marketCap: number;
     bitcoinHolderCount: number;
+  }[];
+};
+
+export type ParamsGetAccountTokens = {
+  account: string;
+  limit?: number;
+};
+
+export type ResponseGetAccountTokens = {
+  account: string;
+  tokens: {
+    symbol: keyof ResponseExchangeRates;
+    precision: number;
+    amount: number;
+    contract: string;
   }[];
 };

@@ -50,7 +50,7 @@ export default function ViewAddress() {
           <AccountProducers accountData={accountData} />
         </div>
         <div className='my-12'>
-          <AccountOverview tokens={accountData.tokens} />
+          <AccountOverview account={accountData.account.account_name} />
         </div>
         <div className='my-12'>
           <Transactions account={accountData.account.account_name} />

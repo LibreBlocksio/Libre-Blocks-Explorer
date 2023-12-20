@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import * as S from '@/styles/table';
-import { Table, TableHead, TableRow, Tooltip } from '@mui/material';
-import dayjs from 'dayjs';
-import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import { useActions } from '@/hooks/api';
-import Loading from '@/components/loading';
-import * as React from 'react';
-import { getTransaction } from '@/lib/api';
-import type { ResponseGetTransaction } from '@/types';
-import TimeAgo from 'react-timeago';
-import CustomPagination from '@/components/custom-pagination';
+import * as S from "@/styles/table";
+import { Table, TableHead, TableRow, Tooltip } from "@mui/material";
+import dayjs from "dayjs";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useActions } from "@/hooks/api";
+import Loading from "@/components/loading";
+import * as React from "react";
+import { getTransaction } from "@/lib/api";
+import type { ResponseGetTransaction } from "@/types";
+import TimeAgo from "react-timeago";
+import CustomPagination from "@/components/custom-pagination";
 
 const MotionTableRow = motion(TableRow);
 
@@ -28,7 +28,7 @@ const TransactionsTable = ({ account }: { account: string }) => {
   });
 
   const [resolvedMappedCurrentPageData, setResolvedMappedCurrentPageData] =
-    React.useState<ResponseGetTransaction['actions']>([]);
+    React.useState<ResponseGetTransaction["actions"]>([]);
 
   React.useEffect(() => {
     if (getActionsQuery.isLoading || getActionsQuery.isError) return;
@@ -45,7 +45,7 @@ const TransactionsTable = ({ account }: { account: string }) => {
       const resolvedData = await Promise.all(
         currentPageData.map(async (row) => {
           const action = row.act.name;
-          if (action.toLowerCase() === 'claim') {
+          if (action.toLowerCase() === "claim") {
             const claimData = await getTransaction({
               queryKey: [, { id: row.trx_id }],
             });
@@ -60,8 +60,8 @@ const TransactionsTable = ({ account }: { account: string }) => {
 
       setPageDataLoading(false);
 
-      setResolvedMappedCurrentPageData(() =>
-        resolvedData as unknown as ResponseGetTransaction['actions']
+      setResolvedMappedCurrentPageData(
+        () => resolvedData as unknown as ResponseGetTransaction["actions"]
       );
     };
 
@@ -69,7 +69,9 @@ const TransactionsTable = ({ account }: { account: string }) => {
   }, [
     getActionsQuery.isLoading,
     getActionsQuery.isError,
-    getActionsQuery.dataUpdatedAt, page, rowsPerPage
+    getActionsQuery.dataUpdatedAt,
+    page,
+    rowsPerPage,
   ]);
 
   if (getActionsQuery.isLoading || resolvedMappedCurrentPageData.length === 0) {
@@ -78,29 +80,37 @@ const TransactionsTable = ({ account }: { account: string }) => {
 
   if (getActionsQuery.isError) {
     return (
-      <div className='container py-20 text-center'>
-        <div className='text-3xl font-medium'>No account found.</div>
-        <div className='mt-10'>Error: {getActionsQuery.error?.message}</div>
+      <div className="container py-20 text-center">
+        <div className="text-3xl font-medium">No account found.</div>
+        <div className="mt-10">Error: {getActionsQuery.error?.message}</div>
       </div>
     );
   }
 
   return (
-    <div className='bg-whtie w-full rounded-xl border border-shade-200 p-2'>
-      <div className='w-full overflow-x-auto'>
-        {pageDataLoading ? <Loading /> : (
-          <Table aria-label='Last Transactions'>
+    <div className="bg-whtie w-full rounded-xl border border-shade-200 p-2">
+      <div className="w-full overflow-x-auto">
+        {pageDataLoading ? (
+          <Loading />
+        ) : (
+          <Table aria-label="Last Transactions">
             <TableHead>
               <S.StyledTableRow>
-                <S.StyledTableHeadCell size='medium'>
+                <S.StyledTableHeadCell size="medium">
                   Tx Hash
                 </S.StyledTableHeadCell>
-                <S.StyledTableHeadCell size='medium'>Date</S.StyledTableHeadCell>
-                <S.StyledTableHeadCell size='medium'>
+                <S.StyledTableHeadCell size="medium">
+                  Date
+                </S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size="medium">
                   Action
                 </S.StyledTableHeadCell>
-                <S.StyledTableHeadCell size='medium'>Data</S.StyledTableHeadCell>
-                <S.StyledTableHeadCell size='medium'>Memo</S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size="medium">
+                  Data
+                </S.StyledTableHeadCell>
+                <S.StyledTableHeadCell size="medium">
+                  Memo
+                </S.StyledTableHeadCell>
               </S.StyledTableRow>
             </TableHead>
             <S.StyledTableBody>
@@ -110,8 +120,8 @@ const TransactionsTable = ({ account }: { account: string }) => {
                   layout
                   initial={{ height: 0, opacity: 0 }}
                   animate={{
-                    height: 'auto',
-                    display: 'table-row',
+                    height: "auto",
+                    display: "table-row",
                     opacity: 1,
                     transition: {
                       duration: 0.6,
@@ -120,96 +130,104 @@ const TransactionsTable = ({ account }: { account: string }) => {
                   exit={{
                     height: 0,
                     opacity: 0,
-                    display: 'none',
+                    display: "none",
                     transition: {
                       duration: 0.2,
                     },
                   }}
                 >
-                  <S.StyledTableCell size='medium'>
-                    <div className='max-w-[220px]'>
-                      <Tooltip title={row.trx_id} placement='bottom'>
+                  <S.StyledTableCell size="medium">
+                    <div className="max-w-[220px]">
+                      <Tooltip title={row.trx_id} placement="bottom">
                         <Link
                           href={`/tx/${row.trx_id}`}
-                          className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                          className="inline-block max-w-full truncate align-middle text-primary hover:underline"
                         >
-                          {row.trx_id.slice(0, 6) + '....' + row.trx_id.slice(-6)}
+                          {row.trx_id.slice(0, 6) +
+                            "...." +
+                            row.trx_id.slice(-6)}
                         </Link>
                       </Tooltip>
                     </div>
                   </S.StyledTableCell>
-                  <S.StyledTableCell size='medium'>
+                  <S.StyledTableCell size="medium">
                     <Tooltip
                       title={dayjs(row.timestamp)
                         .utc(true)
-                        .format('MMM DD, YYYY HH:mm:ss A' + ' UTC')}
-                      placement='bottom'
+                        .format("MMM DD, YYYY HH:mm:ss A" + " UTC")}
+                      placement="bottom"
                     >
-                      <div className='inline-block w-28 truncate align-middle'>
+                      <div className="inline-block w-28 truncate align-middle">
                         {/* @ts-ignore */}
-                        <TimeAgo date={dayjs(row.timestamp).utc(true).toDate()} />{' '}
+                        <TimeAgo
+                          date={dayjs(row.timestamp).utc(true).toDate()}
+                        />{" "}
                         UTC
                       </div>
                     </Tooltip>
                   </S.StyledTableCell>
-                  <S.StyledTableCell size='medium'>
+                  <S.StyledTableCell size="medium">
                     {row.act.name}
                   </S.StyledTableCell>
-                  <S.StyledTableCell size='medium'>
-                    <div className='flex items-center space-x-3'>
-                      <div className='flex max-w-[220px] items-center space-x-1'>
-                        <Tooltip title={row.act.data.from} placement='bottom'>
+                  <S.StyledTableCell size="medium">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex max-w-[220px] items-center space-x-1">
+                        <Tooltip title={row.act.data.from} placement="bottom">
                           <Link
                             href={`/address/${row.act.data.from}`}
-                            className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                            className="inline-block max-w-full truncate align-middle text-primary hover:underline"
                           >
-                            <span className='inline-block truncate align-middle'>
+                            <span className="inline-block truncate align-middle">
                               {row.act.data.from}
                             </span>
                           </Link>
                         </Tooltip>
                         {row.act.data.to ? (
-                          <ArrowRight className='h-4 w-4 shrink-0' />
+                          <ArrowRight className="h-4 w-4 shrink-0" />
                         ) : (
-                          '-'
+                          "-"
                         )}
-                        <Tooltip title={row.act.data.to} placement='bottom'>
+                        <Tooltip title={row.act.data.to} placement="bottom">
                           <Link
                             href={`/address/${row.act.data.to}`}
-                            className='inline-block max-w-full truncate align-middle text-primary hover:underline'
+                            className="inline-block max-w-full truncate align-middle text-primary hover:underline"
                           >
-                            <span className='inline-block truncate align-middle'>
+                            <span className="inline-block truncate align-middle">
                               {row.act.data.to}
-                            </span>{' '}
+                            </span>{" "}
                           </Link>
                         </Tooltip>
                       </div>
                       {row.act.data.amount && (
-                        <div className='flex min-w-max items-center space-x-1 rounded border border-shade-200 p-1 text-sm'>
-                          <Tooltip title={row.act.data.amount} placement='bottom'>
-                          <span>
-  {typeof row.act.data.amount === 'number'
-    ? (row.act.data.symbol === 'PBTC' ? row.act.data.amount.toFixed(9) : row.act.data.amount.toFixed(2))
-    : '-'}
-</span>
-
+                        <div className="flex min-w-max items-center space-x-1 rounded border border-shade-200 p-1 text-sm">
+                          <Tooltip
+                            title={row.act.data.amount}
+                            placement="bottom"
+                          >
+                            <span>
+                              {typeof row.act.data.amount === "number"
+                                ? row.act.data.symbol === "PBTC"
+                                  ? row.act.data.amount.toFixed(9)
+                                  : row.act.data.amount.toFixed(2)
+                                : "-"}
+                            </span>
                           </Tooltip>
                           <img
                             src={`/images/symbols/${row.act.data.symbol}.svg`}
-                            alt=''
-                            className='block h-5 w-5 shrink-0 object-contain'
+                            alt=""
+                            className="block h-5 w-5 shrink-0 object-contain"
                           />
-                          <span className='font-semibold'>
+                          <span className="font-semibold">
                             {row.act.data.symbol}
                           </span>
                         </div>
                       )}
                     </div>
                   </S.StyledTableCell>
-                  <S.StyledTableCell size='medium'>
-                    <div className='max-w-[220px]'>
-                      <Tooltip title={row.act.data.memo} placement='bottom'>
-                        <span className='inline-block max-w-full truncate align-middle'>
+                  <S.StyledTableCell size="medium">
+                    <div className="max-w-[220px]">
+                      <Tooltip title={row.act.data.memo} placement="bottom">
+                        <span className="inline-block max-w-full truncate align-middle">
                           {row.act.data.memo}
                         </span>
                       </Tooltip>
@@ -233,8 +251,8 @@ const TransactionsTable = ({ account }: { account: string }) => {
 export default function Transactions({ account }: { account: string }) {
   return (
     <div>
-      <div className='mb-3 flex items-end justify-between'>
-        <h4 className='mb-3 text-2xl font-semibold'>Transactions</h4>
+      <div className="mb-3 flex items-end justify-between">
+        <h4 className="mb-3 text-2xl font-semibold">Transactions</h4>
       </div>
       <TransactionsTable account={account} />
     </div>

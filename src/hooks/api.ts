@@ -18,6 +18,8 @@ import type {
   ResponseOrdinalsMarketcap,
   ResponseGetDefillama,
   ResponseChainInfo2,
+  ParamsGetAccountTokens,
+  ResponseGetAccountTokens,
 } from '@/types';
 import * as api from '@/lib/api';
 
@@ -126,10 +128,16 @@ export const useOrdinalsMarketcap = () => {
   });
 };
 
-
 export const useDefillamaTVL = () => {
-  return useQuery<ResponseGetDefillama, Error>({ 
+  return useQuery<ResponseGetDefillama, Error>({
     queryKey: ['DefiLlamaTVL'],
     queryFn: api.getDefillamaTVL, // Defillama
+  });
+};
+
+export const useAccountTokens = (params: ParamsGetAccountTokens) => {
+  return useQuery<ResponseGetAccountTokens, Error>({
+    queryKey: ['accountTokens', params],
+    queryFn: api.getAccountTokens,
   });
 };

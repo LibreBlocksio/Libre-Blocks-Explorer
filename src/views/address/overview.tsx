@@ -1,6 +1,10 @@
 'use client';
 
-import { useExchangeRates, useOrdinalsMarketcap } from '@/hooks/api';
+import {
+  useAccountTokens,
+  useExchangeRates,
+  useOrdinalsMarketcap,
+} from '@/hooks/api';
 import type { OverviewProps } from './types';
 import * as React from 'react';
 import * as S from '@/styles/table';
@@ -10,19 +14,28 @@ import CustomPagination from '@/components/custom-pagination';
 
 const MotionTableRow = motion(TableRow);
 
-export default function AccountOverview({ tokens }: OverviewProps) {
+export default function AccountOverview({ account }: OverviewProps) {
   const [page, setPage] = React.useState(0);
   const rowsPerPage = 5;
   const exchangeRatesQuery = useExchangeRates();
   const ordinalsMarketcapQuery = useOrdinalsMarketcap();
+  const accountTokensQuery = useAccountTokens({ account, limit: 999 });
   const [totalValue, setTotalValue] = React.useState(0);
 
   const fetchData = () => {
-    if (exchangeRatesQuery.isLoading || ordinalsMarketcapQuery.isLoading) {
+    if (
+      exchangeRatesQuery.isLoading ||
+      ordinalsMarketcapQuery.isLoading ||
+      accountTokensQuery.isLoading
+    ) {
       return { loading: true };
     }
 
-    if (exchangeRatesQuery.isError || ordinalsMarketcapQuery.isError) {
+    if (
+      exchangeRatesQuery.isError ||
+      ordinalsMarketcapQuery.isError ||
+      accountTokensQuery.isError
+    ) {
       return {
         error:
           exchangeRatesQuery.error?.message +
@@ -33,15 +46,17 @@ export default function AccountOverview({ tokens }: OverviewProps) {
 
     const exchangeRates = exchangeRatesQuery.data;
     const ordinalsMarketcap = ordinalsMarketcapQuery.data;
+    const accountTokens = accountTokensQuery.data;
 
-    return { exchangeRates, ordinalsMarketcap };
+    return { exchangeRates, ordinalsMarketcap, accountTokens };
   };
 
   const dataResult = fetchData();
-  const { exchangeRates, ordinalsMarketcap } = dataResult;
+  const { exchangeRates, ordinalsMarketcap, accountTokens } = dataResult;
+  const tokens = accountTokens?.tokens;
 
   const sortedTokens = React.useMemo(() => {
-    if (!exchangeRates) return false;
+    if (!exchangeRates || !tokens) return false;
 
     const sorted = [...tokens].sort((a, b) => {
       const aValue = (a.amount || 0) * (exchangeRates[a.symbol] || 0);
@@ -52,7 +67,7 @@ export default function AccountOverview({ tokens }: OverviewProps) {
     });
 
     const filtered = sorted.filter(
-      (token) => token.contract !== 'ord.libre' && token.amount !== 0
+      (token) => token.contract !== 'ord.libre' && token.amount !== 0,
     );
 
     return filtered;
@@ -74,7 +89,7 @@ export default function AccountOverview({ tokens }: OverviewProps) {
       const exchangeRates = exchangeRatesQuery.data;
       let total = 0;
 
-      tokens.forEach((token) => {
+      tokens?.forEach((token) => {
         const value = token.amount * exchangeRates[token.symbol];
         if (!isNaN(value)) {
           total += value;
@@ -139,40 +154,42 @@ export default function AccountOverview({ tokens }: OverviewProps) {
                     <img
                       src={`/images/symbols/${token.symbol}.svg`}
                       alt={token.symbol}
-                      className='block h-15 w-15 shrink-0 object-contain mr-2'
+                      className='h-15 w-15 mr-2 block shrink-0 object-contain'
                       onError={(e) => {
                         // @ts-ignore
                         if (e.target instanceof HTMLElement) {
                           e.target.style.display = 'none'; // SVG görüntüsünü gizle
                           const container = document.createElement('div');
-                          container.className = 'flex items-center space-x-2 mr-2'; // İçeriği yatay hizalamak için flex kullanın
+                          container.className =
+                            'flex items-center space-x-2 mr-2'; // İçeriği yatay hizalamak için flex kullanın
                           const textContainer = document.createElement('div');
-                          textContainer.className = 'rounded-full w-8 h-8 bg-[#4F4FDE] flex items-center justify-center ';
+                          textContainer.className =
+                            'rounded-full w-8 h-8 bg-[#4F4FDE] flex items-center justify-center ';
                           textContainer.style.fontSize = '8px'; // Küçük font boyutu ayarlayın
                           textContainer.style.overflow = 'hidden'; // İçeriği kırp
                           textContainer.style.color = 'white'; // Metin rengini beyaz yapın
                           textContainer.innerText = token.symbol; // Token adını içeriğe ekleyin
                           container.appendChild(textContainer); // Yazıyı içeriğe ekleyin
                           if (e.target.parentNode) {
-                            e.target.parentNode.insertBefore(container, e.target.nextSibling); // İçeriği ekleyin
+                            e.target.parentNode.insertBefore(
+                              container,
+                              e.target.nextSibling,
+                            ); // İçeriği ekleyin
                           }
                         }
                       }}
                     />
 
-
-
-
-
-<div className='flex items-center'>
-  <span className='font-semibold'>{token.symbol}</span>
-  {['PBTC', 'LIBRE', 'PUSDT', 'BTCLIB','BTCUSD'].includes(token.symbol) ? null : (
-    <div className='bg-[#4F4FDE] text-white px-2 py-1 rounded-full text-xs ml-2'>
-      BRC20
-    </div>
-  )}
-</div>
-
+                    <div className='flex items-center'>
+                      <span className='font-semibold'>{token.symbol}</span>
+                      {['PBTC', 'LIBRE', 'PUSDT', 'BTCLIB', 'BTCUSD'].includes(
+                        token.symbol,
+                      ) ? null : (
+                        <div className='ml-2 rounded-full bg-[#4F4FDE] px-2 py-1 text-xs text-white'>
+                          BRC20
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </S.StyledTableCell>
                 <S.StyledTableCell size='medium'>
@@ -187,7 +204,7 @@ export default function AccountOverview({ tokens }: OverviewProps) {
                           {(
                             token.amount *
                             (ordinalsMarketcap.tokens.find(
-                              (t) => t.mappedName === token.symbol
+                              (t) => t.mappedName === token.symbol,
                             )?.price ?? 0) *
                             BTCPrice
                           ).toLocaleString('en-US', {

@@ -10,28 +10,28 @@ const apiUrl =
 
 export const getCoinInfo = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_LIBRE_API}/tokens`
+    `${process.env.NEXT_PUBLIC_LIBRE_API}/tokens`,
   );
   return data;
 };
 
 export const getChainInfo = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_LIBRE_API}/stats/chain`
+    `${process.env.NEXT_PUBLIC_LIBRE_API}/stats/chain`,
   );
   return data;
 };
 
 export const getChainInfo2 = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_MAINNET_API}/v1/chain/get_info`
+    `${process.env.NEXT_PUBLIC_MAINNET_API}/v1/chain/get_info`,
   );
   return data;
 };
 
 export const getExchangeRates = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_LIBRE_API}/exchange-rates`
+    `${process.env.NEXT_PUBLIC_LIBRE_API}/exchange-rates`,
   );
   return data;
 };
@@ -77,7 +77,6 @@ export const getTransaction = async ({ queryKey }: { queryKey: any }) => {
   return data;
 };
 
-
 export const getBlock = async ({ queryKey }: { queryKey: any }) => {
   const [_key, queryParams] = queryKey;
   if (!queryParams.block_num_or_id) {
@@ -92,14 +91,14 @@ export const getBlock = async ({ queryKey }: { queryKey: any }) => {
 
 export const getProducers = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_LIBRE_API}/producers`
+    `${process.env.NEXT_PUBLIC_LIBRE_API}/producers`,
   );
   return data;
 };
 
 export const getTokens = async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_LIBRE_API}/tokens`
+    `${process.env.NEXT_PUBLIC_LIBRE_API}/tokens`,
   );
   return data;
 };
@@ -109,8 +108,22 @@ export const getOrdinalsMarketcap = async () => {
   return data;
 };
 
-
 export const getDefillamaTVL = async () => {
   const { data } = await axios.get(`https://api.llama.fi/tvl/libre-swap`);
+  return data;
+};
+
+export const getAccountTokens = async ({ queryKey }: { queryKey: any }) => {
+  const [_key, queryParams] = queryKey;
+  if (!queryParams.account) {
+    return [];
+  }
+
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_MAINNET_API}/v2/state/get_tokens`,
+    {
+      params: queryParams,
+    },
+  );
   return data;
 };
