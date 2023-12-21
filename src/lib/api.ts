@@ -104,7 +104,7 @@ export const getTokens = async () => {
 };
 
 export const getOrdinalsMarketcap = async () => {
-  const { data } = await axios.get(`https://ordinals-api.libre.org/marketcap`);
+  const { data } = await axios.get(`https://heliopolis.libreblocks.com/brctokenscap.json`);
   return data;
 };
 
