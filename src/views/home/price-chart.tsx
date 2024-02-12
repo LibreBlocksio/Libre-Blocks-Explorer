@@ -28,7 +28,7 @@ const Chart = () => {
       const priceData = response.data.prices;
       
       const today = new Date();
-      today.setDate(today.getDate() - 5); // 5 days ..
+      today.setDate(today.getDate() - 2); // 5 days ..
 
       for (let i = 0; i < priceData.length; i++) {
         const date = new Date(priceData[i][0]).toLocaleDateString('en-US');
