@@ -37,6 +37,17 @@ export type ResponseChainInfo2 = {
   last_irreversible_block_time: string;
 };
 
+
+export type ResponseLiquidRichList = {
+  account: string;
+  amount: number;
+}[];
+
+export type ResponseStakedRichList = {
+  account: string;
+  amount: number;
+}[];
+
 export type ResponseExchangeRates = {
   PBTC: number;
   LIBRE: number;

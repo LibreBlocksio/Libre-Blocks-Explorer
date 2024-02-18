@@ -13,8 +13,8 @@ import HeaderSearch from './header-search';
 
 const links = [
   {
-    url: '/',
-    label: 'Dashboard',
+    url: '/rich-list',
+    label: 'Rich List',
   },
   {
     url: '/validators',

@@ -28,6 +28,19 @@ export const getChainInfo2 = async () => {
   );
   return data;
 };
+export const getLiquidRichList = async () => {
+  const { data } = await axios.get(
+    `https://dashboard-api.libre.org/stats/libre/liquid`,
+  );
+  return data;
+};
+
+export const getStakedRichList = async () => {
+  const { data } = await axios.get(
+    `https://dashboard-api.libre.org/stats/libre/staker-richlist`,
+  );
+  return data;
+};
 
 export const getExchangeRates = async () => {
   const { data } = await axios.get(

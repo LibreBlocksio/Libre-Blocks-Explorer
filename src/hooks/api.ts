@@ -18,6 +18,8 @@ import type {
   ResponseOrdinalsMarketcap,
   ResponseGetDefillama,
   ResponseChainInfo2,
+  ResponseLiquidRichList,
+  ResponseStakedRichList,
   ParamsGetAccountTokens,
   ResponseGetAccountTokens,
 } from '@/types';
@@ -111,6 +113,20 @@ export const useProducers = () => {
   return useQuery<ResponseGetProducers, Error>({
     queryKey: ['producers'],
     queryFn: api.getProducers,
+  });
+};
+
+export const useLiquidRichList = () => {
+  return useQuery<ResponseLiquidRichList, Error>({
+    queryKey: ['liquidrichlist'],
+    queryFn: api.getLiquidRichList,
+  });
+};
+
+export const useStakedRichList = () => {
+  return useQuery<ResponseStakedRichList, Error>({
+    queryKey: ['stakedrichlist'],
+    queryFn: api.getStakedRichList,
   });
 };
 
