@@ -1,23 +1,23 @@
 import Link from 'next/link';
 
 const col1 = {
-  title: 'Libre Blockchain',
+  title: 'Libre Chain',
   items: [
     {
-      label: 'Blockchain',
-      url: 'https://www.libre.org/blockchain',
+      label: 'Libre Chain Homepage',
+      url: 'https://chain.libre.org/',
+    },
+    {
+      label: 'Libre DEX',
+      url: 'https://www.libredex.org/',
     },
     {
       label: 'Wallets',
-      url: 'https://www.libre.org/wallets',
-    },
-    {
-      label: 'Developers',
-      url: 'https://www.libre.org/developers1',
+      url: 'https://chain.libre.org/wallets',
     },
     {
       label: 'Docs',
-      url: 'https://docs.libre.org/',
+      url: 'https://docs.libre.org/libre-docs/',
     },
     {
       label: 'Blog',
@@ -56,7 +56,7 @@ const col3 = {
   title: 'Support',
   items: [
     {
-      label: 'Libre Blockchain Support',
+      label: 'Libre Chain Support',
       url: 'mailto:support@libre.org',
     },
     {
@@ -103,7 +103,7 @@ export default function Footer() {
             <div className='mt-4 flex items-center'>
               <span className='mr-2 block h-2 w-2 rounded-full bg-green-500'></span>
               <span className='text-xs text-shade-700'>
-              Latest update on Dec 15 2023
+              Latest update on Feb 18 2024
               </span>
             </div>
           </div>
