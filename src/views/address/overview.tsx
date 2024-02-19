@@ -207,8 +207,8 @@ export default function AccountOverview({ account }: OverviewProps) {
                               (t) => t.mappedName === token.symbol,
                             )?.price ?? 0) *
                             BTCPrice
-                          ).toLocaleString('en-US', {
-                            maximumFractionDigits: 3,
+                          ).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
                           })}
                         </span>
                       ) : (
@@ -216,8 +216,8 @@ export default function AccountOverview({ account }: OverviewProps) {
                           $
                           {(
                             token.amount * exchangeRates[token.symbol]
-                          ).toLocaleString('en-US', {
-                            maximumFractionDigits: 3,
+                          ).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
                           })}
                         </span>
                       )}

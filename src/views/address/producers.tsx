@@ -10,6 +10,15 @@ import {
 } from '@/hooks/api';
 
 export default function AccountOverview({ accountData }: ViewProps) {
+  const [showInfo, setShowInfo] = React.useState(false);
+  const handleMouseEnter = () => {
+    setShowInfo(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowInfo(false);
+  };
+
   const exchangeRatesQuery = useExchangeRates();
   const ordinalsMarketcapQuery = useOrdinalsMarketcap();
   const accountTokensQuery = useAccountTokens({
@@ -65,7 +74,7 @@ export default function AccountOverview({ accountData }: ViewProps) {
         return accumulator + toSum;
       }, 0);
 
-      const formattedSum = sumWithInitial.toLocaleString('en-US', {
+      const formattedSum = sumWithInitial.toLocaleString(undefined, {
         maximumFractionDigits: 3,
       });
 
@@ -79,28 +88,76 @@ export default function AccountOverview({ accountData }: ViewProps) {
     exchangeRatesQuery.isSuccess,
   ]);
 
-  const votingPower = Number.parseFloat(
-    accountData.account?.voter_info?.staked,
-  ).toLocaleString('en-US', { maximumFractionDigits: 3 });
+  function formatNumber(number: number | bigint) {
+    return new Intl.NumberFormat(undefined, {
+      maximumFractionDigits: 4,
+    }).format(number);
+  }
+
+  const votingPowerRaw = accountData.account?.voter_info?.staked;
+  const votingPower = votingPowerRaw !== null && votingPowerRaw !== undefined
+    ? formatNumber(Number.parseFloat(votingPowerRaw))
+    : '-';
+
   const accountCreated = dayjs(accountData.account.created).fromNow();
   const votedFor = accountData.account?.voter_info?.producers;
   const totalActions = accountData.total_actions;
 
   return (
     <div>
-      <div className='text-3xl font-bold'>Value: {totalValue}</div>
+      <div className='text-3xl font-bold'>Value: ${totalValue}</div>
       <div className='mt-6 grid gap-x-12 gap-y-6 sm:grid-cols-2'>
-        <div className='text-lg font-semibold'>
-          Voting Power: {votingPower ?? '-'}
-        </div>
-        <div className='text-lg font-semibold'>
-          Account Created: {accountCreated}
-        </div>
-        <div className='text-lg font-semibold'>
-          Voted For: {votedFor ?? '-'}
-        </div>
-        <div className='text-lg font-semibold'>{totalActions} Transactions</div>
+
+        {!votedFor && votingPower === '-' ? (
+          <>
+
+            <div className='text-lg font-semibold sm:col-span-1 '>
+              Vote Info:
+              <a
+                className='ml-2 inline-flex items-center justify-center rounded-full bg-[#4f4fde] px-3 py-1 text-white'
+                href='https://dashboard.libre.org/validators'
+              >
+                Stake $LIBRE and Vote
+              </a>
+            </div>
+
+            <div className='sm:col-span-1 gap-x-12 grid gap-y-6'>
+              <div className='text-lg font-semibold'>
+                Account Created: {accountCreated}
+              </div>
+              <div className='text-lg font-semibold'>
+                {totalActions} Transactions
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+
+            <div className='text-lg font-semibold'>
+              Voting Power: {votingPower}
+            </div>
+            <div className='text-lg font-semibold'>
+              Voted For: {votedFor ? votedFor : '-'}
+            </div>
+
+            <div className='text-lg font-semibold'>
+              Account Created: {accountCreated}
+            </div>
+            <div className='text-lg font-semibold'>
+              {totalActions} Transactions
+            </div>
+          </>
+        )}
       </div>
     </div>
+
+
+
+
+
+
+
+
+
   );
 }

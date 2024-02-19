@@ -15,7 +15,7 @@ interface DataItem {
 }
 
 export default function RichListTable({ data, data2 }: RichListTableProps) {
-  const numberFormat = new Intl.NumberFormat('en-US', { style: 'decimal' });
+  const numberFormat = new Intl.NumberFormat();
   const [selectedTab, setSelectedTab] = useState('balance');
 
   const calculateTotalData = () => {
