@@ -2,6 +2,7 @@
 const plugin = require('tailwindcss/plugin');
 const colors = require('tailwindcss/colors');
 
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -11,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)'],
+        sans: ['Inter', 'sans-serif'],
       },
       fontSize: {
         '4.5xl': ['2.5rem', '3rem'],
